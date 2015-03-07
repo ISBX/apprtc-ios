@@ -1,0 +1,409 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		5C80AA7C1AAB5DF300F21FFA /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C80AA7B1AAB5DF300F21FFA /* main.m */; };
+		5C80AA7F1AAB5DF300F21FFA /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C80AA7E1AAB5DF300F21FFA /* AppDelegate.m */; };
+		5C80AA851AAB5DF300F21FFA /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5C80AA831AAB5DF300F21FFA /* Main.storyboard */; };
+		5C80AA871AAB5DF300F21FFA /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5C80AA861AAB5DF300F21FFA /* Images.xcassets */; };
+		5C80AA8A1AAB5DF300F21FFA /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5C80AA881AAB5DF300F21FFA /* LaunchScreen.xib */; };
+		5C80AAA11AAB717100F21FFA /* ARTCRoomViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C80AAA01AAB717100F21FFA /* ARTCRoomViewController.m */; };
+		5C80AAA61AAB71C700F21FFA /* ARTCVideoChatViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C80AAA51AAB71C700F21FFA /* ARTCVideoChatViewController.m */; };
+		5C80AAAA1AAB788A00F21FFA /* ARTCRoomTextInputViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C80AAA91AAB788A00F21FFA /* ARTCRoomTextInputViewCell.m */; };
+		65B60C96FF584964C27562A6 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EDADA2C0C3A5199BC24EF352 /* libPods.a */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		5C80AA761AAB5DF300F21FFA /* AppRTC.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AppRTC.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		5C80AA7A1AAB5DF300F21FFA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		5C80AA7B1AAB5DF300F21FFA /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		5C80AA7D1AAB5DF300F21FFA /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		5C80AA7E1AAB5DF300F21FFA /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		5C80AA841AAB5DF300F21FFA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		5C80AA861AAB5DF300F21FFA /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		5C80AA891AAB5DF300F21FFA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
+		5C80AA9F1AAB717100F21FFA /* ARTCRoomViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ARTCRoomViewController.h; sourceTree = "<group>"; };
+		5C80AAA01AAB717100F21FFA /* ARTCRoomViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ARTCRoomViewController.m; sourceTree = "<group>"; };
+		5C80AAA41AAB71C700F21FFA /* ARTCVideoChatViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ARTCVideoChatViewController.h; sourceTree = "<group>"; };
+		5C80AAA51AAB71C700F21FFA /* ARTCVideoChatViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ARTCVideoChatViewController.m; sourceTree = "<group>"; };
+		5C80AAA81AAB788A00F21FFA /* ARTCRoomTextInputViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ARTCRoomTextInputViewCell.h; sourceTree = "<group>"; };
+		5C80AAA91AAB788A00F21FFA /* ARTCRoomTextInputViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ARTCRoomTextInputViewCell.m; sourceTree = "<group>"; };
+		5C80AAAB1AAB9A6B00F21FFA /* libWebRTC.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libWebRTC.a; path = Lib/libWebRTC.a; sourceTree = "<group>"; };
+		A91A157833594B50E74E767F /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
+		B6DABCBD6F43FEC6530D36B2 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
+		EDADA2C0C3A5199BC24EF352 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		5C80AA731AAB5DF300F21FFA /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				65B60C96FF584964C27562A6 /* libPods.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		1148D91C97037D5C1CF3115B /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				5C80AAAB1AAB9A6B00F21FFA /* libWebRTC.a */,
+				EDADA2C0C3A5199BC24EF352 /* libPods.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		4DD24E6966F906824AE26A91 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				A91A157833594B50E74E767F /* Pods.debug.xcconfig */,
+				B6DABCBD6F43FEC6530D36B2 /* Pods.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+		5C80AA6D1AAB5DF300F21FFA = {
+			isa = PBXGroup;
+			children = (
+				5C80AA781AAB5DF300F21FFA /* AppRTC */,
+				5C80AA771AAB5DF300F21FFA /* Products */,
+				4DD24E6966F906824AE26A91 /* Pods */,
+				1148D91C97037D5C1CF3115B /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		5C80AA771AAB5DF300F21FFA /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				5C80AA761AAB5DF300F21FFA /* AppRTC.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		5C80AA781AAB5DF300F21FFA /* AppRTC */ = {
+			isa = PBXGroup;
+			children = (
+				5C80AAA21AAB718200F21FFA /* App */,
+				5C80AAA31AAB718700F21FFA /* ViewControllers */,
+				5C80AAA71AAB786200F21FFA /* Views */,
+				5C80AA791AAB5DF300F21FFA /* Supporting Files */,
+			);
+			path = AppRTC;
+			sourceTree = "<group>";
+		};
+		5C80AA791AAB5DF300F21FFA /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				5C80AA7A1AAB5DF300F21FFA /* Info.plist */,
+				5C80AA7B1AAB5DF300F21FFA /* main.m */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		5C80AAA21AAB718200F21FFA /* App */ = {
+			isa = PBXGroup;
+			children = (
+				5C80AA7D1AAB5DF300F21FFA /* AppDelegate.h */,
+				5C80AA7E1AAB5DF300F21FFA /* AppDelegate.m */,
+				5C80AA831AAB5DF300F21FFA /* Main.storyboard */,
+				5C80AA861AAB5DF300F21FFA /* Images.xcassets */,
+				5C80AA881AAB5DF300F21FFA /* LaunchScreen.xib */,
+			);
+			name = App;
+			sourceTree = "<group>";
+		};
+		5C80AAA31AAB718700F21FFA /* ViewControllers */ = {
+			isa = PBXGroup;
+			children = (
+				5C80AA9F1AAB717100F21FFA /* ARTCRoomViewController.h */,
+				5C80AAA01AAB717100F21FFA /* ARTCRoomViewController.m */,
+				5C80AAA41AAB71C700F21FFA /* ARTCVideoChatViewController.h */,
+				5C80AAA51AAB71C700F21FFA /* ARTCVideoChatViewController.m */,
+			);
+			name = ViewControllers;
+			sourceTree = "<group>";
+		};
+		5C80AAA71AAB786200F21FFA /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				5C80AAA81AAB788A00F21FFA /* ARTCRoomTextInputViewCell.h */,
+				5C80AAA91AAB788A00F21FFA /* ARTCRoomTextInputViewCell.m */,
+			);
+			name = Views;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		5C80AA751AAB5DF300F21FFA /* AppRTC */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 5C80AA991AAB5DF300F21FFA /* Build configuration list for PBXNativeTarget "AppRTC" */;
+			buildPhases = (
+				24ABD54F0D4EF6CABF005175 /* Check Pods Manifest.lock */,
+				5C80AA721AAB5DF300F21FFA /* Sources */,
+				5C80AA731AAB5DF300F21FFA /* Frameworks */,
+				5C80AA741AAB5DF300F21FFA /* Resources */,
+				50BFB4AA9193C934A869E7DE /* Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = AppRTC;
+			productName = AppRTC;
+			productReference = 5C80AA761AAB5DF300F21FFA /* AppRTC.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		5C80AA6E1AAB5DF300F21FFA /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0610;
+				ORGANIZATIONNAME = ISBX;
+				TargetAttributes = {
+					5C80AA751AAB5DF300F21FFA = {
+						CreatedOnToolsVersion = 6.1.1;
+					};
+				};
+			};
+			buildConfigurationList = 5C80AA711AAB5DF300F21FFA /* Build configuration list for PBXProject "AppRTC" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 5C80AA6D1AAB5DF300F21FFA;
+			productRefGroup = 5C80AA771AAB5DF300F21FFA /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				5C80AA751AAB5DF300F21FFA /* AppRTC */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		5C80AA741AAB5DF300F21FFA /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5C80AA851AAB5DF300F21FFA /* Main.storyboard in Resources */,
+				5C80AA8A1AAB5DF300F21FFA /* LaunchScreen.xib in Resources */,
+				5C80AA871AAB5DF300F21FFA /* Images.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		24ABD54F0D4EF6CABF005175 /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		50BFB4AA9193C934A869E7DE /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		5C80AA721AAB5DF300F21FFA /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5C80AAAA1AAB788A00F21FFA /* ARTCRoomTextInputViewCell.m in Sources */,
+				5C80AAA61AAB71C700F21FFA /* ARTCVideoChatViewController.m in Sources */,
+				5C80AAA11AAB717100F21FFA /* ARTCRoomViewController.m in Sources */,
+				5C80AA7F1AAB5DF300F21FFA /* AppDelegate.m in Sources */,
+				5C80AA7C1AAB5DF300F21FFA /* main.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		5C80AA831AAB5DF300F21FFA /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				5C80AA841AAB5DF300F21FFA /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		5C80AA881AAB5DF300F21FFA /* LaunchScreen.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				5C80AA891AAB5DF300F21FFA /* Base */,
+			);
+			name = LaunchScreen.xib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		5C80AA971AAB5DF300F21FFA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		5C80AA981AAB5DF300F21FFA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		5C80AA9A1AAB5DF300F21FFA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = A91A157833594B50E74E767F /* Pods.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				INFOPLIST_FILE = AppRTC/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Lib",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		5C80AA9B1AAB5DF300F21FFA /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = B6DABCBD6F43FEC6530D36B2 /* Pods.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				INFOPLIST_FILE = AppRTC/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Lib",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		5C80AA711AAB5DF300F21FFA /* Build configuration list for PBXProject "AppRTC" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5C80AA971AAB5DF300F21FFA /* Debug */,
+				5C80AA981AAB5DF300F21FFA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		5C80AA991AAB5DF300F21FFA /* Build configuration list for PBXNativeTarget "AppRTC" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5C80AA9A1AAB5DF300F21FFA /* Debug */,
+				5C80AA9B1AAB5DF300F21FFA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 5C80AA6E1AAB5DF300F21FFA /* Project object */;
+}

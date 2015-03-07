@@ -1,0 +1,2 @@
+PODS_APPRTC_LIBRARY_SEARCH_PATHS = "$(PODS_ROOT)/../Lib"
+PODS_APPRTC_OTHER_LDFLAGS = -l"WebRTC" -l"c++" -l"icucore" -l"sqlite3" -l"stdc++.6" -framework "AVFoundation" -framework "AudioToolbox" -framework "CFNetwork" -framework "CoreAudio" -framework "CoreGraphics" -framework "CoreMedia" -framework "CoreVideo" -framework "GLKit" -framework "OpenGLES" -framework "QuartzCore" -framework "Security"
