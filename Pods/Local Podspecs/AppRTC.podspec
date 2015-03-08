@@ -8,7 +8,6 @@ Pod::Spec.new do |s|
   s.platform           = :ios, "7.0"
   s.source             = { :git => 'https://github.com/ISBX/apprtc-ios.git', :tag => '1.0.0' }
   s.source_files       = "Lib/*.{h,m,c}"
-  s.resources          = "Lib/**/*.png"
   s.requires_arc       = true
   s.frameworks         = "QuartzCore", "OpenGLES", "CoreGraphics", "CoreVideo", "CoreMedia", "CoreAudio", "AVFoundation", "AudioToolbox", "GLKit", "CFNetwork", "Security"
   s.libraries          = "sqlite3", "stdc++.6", "icucore", "c++"
