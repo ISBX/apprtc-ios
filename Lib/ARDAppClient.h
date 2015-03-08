@@ -60,6 +60,7 @@ typedef NS_ENUM(NSInteger, ARDAppClientState) {
 
 @property(nonatomic, readonly) ARDAppClientState state;
 @property(nonatomic, weak) id<ARDAppClientDelegate> delegate;
+@property(nonatomic, strong) NSString *serverHostUrl;
 
 - (instancetype)initWithDelegate:(id<ARDAppClientDelegate>)delegate;
 

@@ -218,7 +218,7 @@
                                 </constraints>
                             </view>
                         </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="yGf-SH-nK1" firstAttribute="top" secondItem="hBv-zP-oWI" secondAttribute="bottom" id="0G3-Sw-emm"/>
                             <constraint firstItem="hBv-zP-oWI" firstAttribute="leading" secondItem="K8r-3C-MXA" secondAttribute="leading" id="A0f-J1-3Oq"/>
@@ -239,6 +239,7 @@
                         <outlet property="buttonContainerView" destination="lf3-Gc-fyY" id="1DE-4K-IUU"/>
                         <outlet property="buttonContainerViewLeftConstraint" destination="pYM-EH-dSy" id="jVw-QV-gdS"/>
                         <outlet property="footerView" destination="dd3-fP-LRC" id="uOr-2m-vuC"/>
+                        <outlet property="footerViewBottomConstraint" destination="zy4-uR-kWp" id="q2i-ux-MmX"/>
                         <outlet property="hangupButton" destination="GG8-K5-Ssv" id="BAr-G8-qJf"/>
                         <outlet property="localView" destination="pNG-Z1-33i" id="su4-ei-5ma"/>
                         <outlet property="localViewBottomConstraint" destination="s5p-iU-xdy" id="Cx3-07-m02"/>
@@ -246,6 +247,10 @@
                         <outlet property="localViewRightConstraint" destination="jbE-2b-am5" id="Msx-kp-f4l"/>
                         <outlet property="localViewWidthConstraint" destination="CeK-nw-lub" id="0Pp-iS-NS3"/>
                         <outlet property="remoteView" destination="hBv-zP-oWI" id="0wa-4C-PFT"/>
+                        <outlet property="remoteViewBottomConstraint" destination="0G3-Sw-emm" id="B0Y-Nz-bVh"/>
+                        <outlet property="remoteViewLeftConstraint" destination="A0f-J1-3Oq" id="irO-yx-GYn"/>
+                        <outlet property="remoteViewRightConstraint" destination="fje-pq-7U1" id="NSW-fJ-HAM"/>
+                        <outlet property="remoteViewTopConstraint" destination="RpQ-i1-veX" id="SMP-kJ-366"/>
                         <outlet property="urlLabel" destination="X4B-RQ-879" id="Y9h-q5-HVa"/>
                         <outlet property="videoButton" destination="76V-d2-VYt" id="SFH-gg-Kmo"/>
                     </connections>

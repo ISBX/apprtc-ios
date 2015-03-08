@@ -51,11 +51,11 @@
 static NSString *kARDRoomServerHostUrl =
     @"https://apprtc.appspot.com";
 static NSString *kARDRoomServerRegisterFormat =
-    @"https://apprtc.appspot.com/join/%@";
+    @"%@/join/%@";
 static NSString *kARDRoomServerMessageFormat =
-    @"https://apprtc.appspot.com/message/%@/%@";
+    @"%@/message/%@/%@";
 static NSString *kARDRoomServerByeFormat =
-    @"https://apprtc.appspot.com/bye/%@/%@";
+    @"%@/leave/%@/%@";
 
 static NSString *kARDDefaultSTUNServerUrl =
     @"stun:stun.l.google.com:19302";
@@ -96,6 +96,7 @@ static NSInteger kARDAppClientErrorInvalidRoom = -7;
 
 @synthesize delegate = _delegate;
 @synthesize state = _state;
+@synthesize serverHostUrl = _serverHostUrl;
 @synthesize channel = _channel;
 @synthesize peerConnection = _peerConnection;
 @synthesize factory = _factory;
@@ -115,6 +116,7 @@ static NSInteger kARDAppClientErrorInvalidRoom = -7;
     _factory = [[RTCPeerConnectionFactory alloc] init];
     _messageQueue = [NSMutableArray array];
     _iceServers = [NSMutableArray arrayWithObject:[self defaultSTUNServer]];
+    _serverHostUrl = kARDRoomServerHostUrl;
   }
   return self;
 }
@@ -481,7 +483,7 @@ static NSInteger kARDAppClientErrorInvalidRoom = -7;
   // We need to set origin because TURN provider whitelists requests based on
   // origin.
   [request addValue:@"Mozilla/5.0" forHTTPHeaderField:@"user-agent"];
-  [request addValue:kARDRoomServerHostUrl forHTTPHeaderField:@"origin"];
+  [request addValue:self.serverHostUrl forHTTPHeaderField:@"origin"];
   [NSURLConnection sendAsyncRequest:request
                   completionHandler:^(NSURLResponse *response,
                                       NSData *data,
@@ -503,7 +505,7 @@ static NSInteger kARDAppClientErrorInvalidRoom = -7;
 - (void)registerWithRoomServerForRoomId:(NSString *)roomId
     completionHandler:(void (^)(ARDRegisterResponse *))completionHandler {
   NSString *urlString =
-      [NSString stringWithFormat:kARDRoomServerRegisterFormat, roomId];
+      [NSString stringWithFormat:kARDRoomServerRegisterFormat, self.serverHostUrl, roomId];
   NSURL *roomURL = [NSURL URLWithString:urlString];
   NSLog(@"Registering with room server.");
   __weak ARDAppClient *weakSelf = self;
@@ -528,7 +530,7 @@ static NSInteger kARDAppClientErrorInvalidRoom = -7;
   NSData *data = [message JSONData];
   NSString *urlString =
       [NSString stringWithFormat:
-          kARDRoomServerMessageFormat, _roomId, _clientId];
+          kARDRoomServerMessageFormat, self.serverHostUrl, _roomId, _clientId];
   NSURL *url = [NSURL URLWithString:urlString];
   NSLog(@"C->RS POST: %@", message);
   __weak ARDAppClient *weakSelf = self;
@@ -582,7 +584,7 @@ static NSInteger kARDAppClientErrorInvalidRoom = -7;
 
 - (void)unregisterWithRoomServer {
   NSString *urlString =
-      [NSString stringWithFormat:kARDRoomServerByeFormat, _roomId, _clientId];
+      [NSString stringWithFormat:kARDRoomServerByeFormat, self.serverHostUrl, _roomId, _clientId];
   NSURL *url = [NSURL URLWithString:urlString];
   NSURLRequest *request = [NSURLRequest requestWithURL:url];
   NSURLResponse *response = nil;
