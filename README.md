@@ -4,6 +4,7 @@
 This Xcode project is a wrapper for the Google's WebRTC Demo. It organizes the WebRTC components into a cocoa pod that can be easily deployed into any Xcode project. The precompiled libWebRTC static library bundled with the pod works with 64-bit apps, unlike prior versions of WebRTC projects where only the 32-bit version was available. Currently, the project is designed to run on iOS Devices (iOS Simulator is not supported).
 
 Included in this Xcode project is a native Storyboard based Room Locator and Video Chat View Controllers:
+
 ![AppRTC - iOS WebRTC Client Pod](./screenshots/screenshots.jpg "AppRTC iOS WebRTC App")
 
 ## Features
@@ -19,7 +20,7 @@ The following resources were useful in helping get this project to where it is t
 * [hiroeorz's AppRTCDemo Project](https://github.com/hiroeorz/AppRTCDemo)
 
 ## Running the AppRTC App on your iOS Device
-To run the app on your iPhone or Ipad you can fork this repository and open the `AppRTC.xcworkspace` in Xcode and compile onto your iOS Device to check it out. By default the server address is set to https://apprtc.appspot.com.
+To run the app on your iPhone or iPad you can fork this repository and open the `AppRTC.xcworkspace` in Xcode and compile onto your iOS Device to check it out. By default the server address is set to https://apprtc.appspot.com.
 
 ## Using the AppRTC Pod in your App
 If you'd like to incorporate WebRTC Video Chat into your own application, you can install the AppRTC pod:
