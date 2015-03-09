@@ -1,16 +1,18 @@
 # AppRTC - iOS implementation of the Google WebRTC Demo
 
 ## About
-This Xcode project is a wrapper for the Google's WebRTC Demo. It organizes the WebRTC components into a cocoa pod that can be easily deployed into any Xcode project. The precompiled libWebRTC static library bundled with the pod works with 64-bit apps, unlike prior versions of WebRTC projects where only the 32-bit version was available. Currently, the project is designed to run on iOS Devices (iOS Simulator is not supported).
+This Xcode project is a native wrapper for the Google's WebRTC Demo. It organizes the WebRTC components into a cocoa pod that can be easily deployed into any Xcode project. The precompiled libWebRTC static library bundled with the pod works with 64-bit apps, unlike prior versions of WebRTC projects where only the 32-bit version was available. Currently, the project is designed to run on iOS Devices (iOS Simulator is not supported).
 
 Included in this Xcode project is a native Storyboard based Room Locator and Video Chat View Controllers:
 
 ![AppRTC - iOS WebRTC Client Pod](./screenshots/screenshots.jpg "AppRTC iOS WebRTC App")
 
 ## Features
-* 64-bit support
+* Fully native objective-c 64-bit support
 * pre-compiled libWebRTC.a (saves you hours of compiling)
 * Cocoa Pod 
+* View Controllers to easily drop into your own project
+* Exposed APIs to easily customize and adapt to your needs (see below for more details)
 * Supports the most recent https://apprtc.appspot.com (March 2015)
 * We also have a fork of the [Google AppRTC Web Server](https://github.com/ISBX/apprtc-server) that maintains full compatibility with this project
 
@@ -63,7 +65,7 @@ To do this, perform the following:
  ```objective-c
 @interface ARTCVideoChatViewController : UIViewController <ARDAppClientDelegate, RTCEAGLVideoViewDelegate>
 ```
-    * `ARDAppClientDegate` - Handles events when remote client connects and disconnect states. Also, handles events when local and remote video feeds are received.
+    * `ARDAppClientDelegate` - Handles events when remote client connects and disconnect states. Also, handles events when local and remote video feeds are received.
     * `RTCEAGLVideoViewDelegate` - Handles event for determining the video frame size.
     
 3. Define the following properties in your class:
@@ -94,7 +96,7 @@ To do this, perform the following:
     [self.client connectToRoomWithId:@"room123" options:nil];
 ```
 
-6. Handle the delegate methods for `ARDAppClientDegate`
+6. Handle the delegate methods for `ARDAppClientDelegate`
  ```objective-c
 - (void)appClient:(ARDAppClient *)client didChangeState:(ARDAppClientState)state {
     switch (state) {
