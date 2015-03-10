@@ -117,13 +117,37 @@ static NSInteger kARDAppClientErrorInvalidRoom = -7;
     _messageQueue = [NSMutableArray array];
     _iceServers = [NSMutableArray arrayWithObject:[self defaultSTUNServer]];
     _serverHostUrl = kARDRoomServerHostUrl;
+      
+      [[NSNotificationCenter defaultCenter] addObserver:self
+                                               selector:@selector(orientationChanged:)
+                                                   name:@"UIDeviceOrientationDidChangeNotification"
+                                                 object:nil];
   }
   return self;
 }
 
 - (void)dealloc {
+  [[NSNotificationCenter defaultCenter] removeObserver:self name:@"UIDeviceOrientationDidChangeNotification" object:nil];
   [self disconnect];
 }
+
+- (void)orientationChanged:(NSNotification *)notification {
+    UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
+    if (UIDeviceOrientationIsLandscape(orientation) || UIDeviceOrientationIsPortrait(orientation)) {
+        //Remove current video track
+        RTCMediaStream *localStream = _peerConnection.localStreams[0];
+        [localStream removeVideoTrack:localStream.videoTracks[0]];
+        
+        RTCVideoTrack *localVideoTrack = [self createLocalVideoTrack];
+        if (localVideoTrack) {
+            [localStream addVideoTrack:localVideoTrack];
+            [_delegate appClient:self didReceiveLocalVideoTrack:localVideoTrack];
+        }
+        [_peerConnection removeStream:localStream];
+        [_peerConnection addStream:localStream];
+    }
+}
+
 
 - (void)setState:(ARDAppClientState)state {
   if (_state == state) {
@@ -438,41 +462,46 @@ static NSInteger kARDAppClientErrorInvalidRoom = -7;
   }
 }
 
-- (RTCMediaStream *)createLocalMediaStream {
-  RTCMediaStream* localStream = [_factory mediaStreamWithLabel:@"ARDAMS"];
-  RTCVideoTrack* localVideoTrack = nil;
 
-  // The iOS simulator doesn't provide any sort of camera capture
-  // support or emulation (http://goo.gl/rHAnC1) so don't bother
-  // trying to open a local stream.
-  // TODO(tkchin): local video capture for OSX. See
-  // https://code.google.com/p/webrtc/issues/detail?id=3417.
+- (RTCVideoTrack *)createLocalVideoTrack {
+    // The iOS simulator doesn't provide any sort of camera capture
+    // support or emulation (http://goo.gl/rHAnC1) so don't bother
+    // trying to open a local stream.
+    // TODO(tkchin): local video capture for OSX. See
+    // https://code.google.com/p/webrtc/issues/detail?id=3417.
+
+    RTCVideoTrack *localVideoTrack = nil;
 #if !TARGET_IPHONE_SIMULATOR && TARGET_OS_IPHONE
-  NSString *cameraID = nil;
-  for (AVCaptureDevice *captureDevice in
-       [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo]) {
-    if (captureDevice.position == AVCaptureDevicePositionFront) {
-      cameraID = [captureDevice localizedName];
-      break;
-    }
-  }
-  NSAssert(cameraID, @"Unable to get the front camera id");
 
-  RTCVideoCapturer *capturer =
-      [RTCVideoCapturer capturerWithDeviceName:cameraID];
-  RTCMediaConstraints *mediaConstraints = [self defaultMediaStreamConstraints];
-  RTCVideoSource *videoSource =
-      [_factory videoSourceWithCapturer:capturer
-                            constraints:mediaConstraints];
-  localVideoTrack =
-      [_factory videoTrackWithID:@"ARDAMSv0" source:videoSource];
-  if (localVideoTrack) {
-    [localStream addVideoTrack:localVideoTrack];
-  }
-  [_delegate appClient:self didReceiveLocalVideoTrack:localVideoTrack];
+    NSString *cameraID = nil;
+    for (AVCaptureDevice *captureDevice in
+         [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo]) {
+        if (captureDevice.position == AVCaptureDevicePositionFront) {
+            cameraID = [captureDevice localizedName];
+            break;
+        }
+    }
+    NSAssert(cameraID, @"Unable to get the front camera id");
+    
+    RTCVideoCapturer *capturer = [RTCVideoCapturer capturerWithDeviceName:cameraID];
+    RTCMediaConstraints *mediaConstraints = [self defaultMediaStreamConstraints];
+    RTCVideoSource *videoSource = [_factory videoSourceWithCapturer:capturer constraints:mediaConstraints];
+    localVideoTrack = [_factory videoTrackWithID:@"ARDAMSv0" source:videoSource];
 #endif
-  [localStream addAudioTrack:[_factory audioTrackWithID:@"ARDAMSa0"]];
-  return localStream;
+    return localVideoTrack;
+}
+
+- (RTCMediaStream *)createLocalMediaStream {
+    RTCMediaStream* localStream = [_factory mediaStreamWithLabel:@"ARDAMS"];
+
+    RTCVideoTrack *localVideoTrack = [self createLocalVideoTrack];
+    if (localVideoTrack) {
+        [localStream addVideoTrack:localVideoTrack];
+        [_delegate appClient:self didReceiveLocalVideoTrack:localVideoTrack];
+    }
+
+    [localStream addAudioTrack:[_factory audioTrackWithID:@"ARDAMSa0"]];
+    return localStream;
 }
 
 - (void)requestTURNServersWithURL:(NSURL *)requestURL

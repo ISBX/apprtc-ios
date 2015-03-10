@@ -56,5 +56,4 @@ To do this, perform the followng:
 The following are known issues that are being worked and should be released shortly:
 * Audio Mute needs to be implemented
 * Video Mute needs to be implemented
-* Does now allow rejoining a room (reports back room is full error)
-* Video is not correctly oriented in Landscape
+* Does not allow rejoining a room (reports back room is full error)
