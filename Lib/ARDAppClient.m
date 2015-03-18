@@ -615,19 +615,15 @@ static NSInteger kARDAppClientErrorInvalidRoom = -7;
   NSString *urlString =
       [NSString stringWithFormat:kARDRoomServerByeFormat, self.serverHostUrl, _roomId, _clientId];
   NSURL *url = [NSURL URLWithString:urlString];
-  NSURLRequest *request = [NSURLRequest requestWithURL:url];
-  NSURLResponse *response = nil;
-  // We want a synchronous request so that we know that we're unregistered from
-  // room server before we do any further unregistration.
   NSLog(@"C->RS: BYE");
-  NSError *error = nil;
-  [NSURLConnection sendSynchronousRequest:request
-                        returningResponse:&response
-                                    error:&error];
-  if (error) {
-    NSLog(@"Error unregistering from room server: %@", error);
-  }
-  NSLog(@"Unregistered from room server.");
+    //Make sure to do a POST
+    [NSURLConnection sendAsyncPostToURL:url withData:nil completionHandler:^(BOOL succeeded, NSData *data) {
+        if (succeeded) {
+            NSLog(@"Unregistered from room server.");
+        } else {
+            NSLog(@"Failed to unregister from room server.");
+        }
+    }];
 }
 
 - (NSError *)roomServerNetworkError {
