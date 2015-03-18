@@ -143,4 +143,3 @@ If you'd like to contribute, please fork the repository and issue pull requests.
 The following are known issues that are being worked and should be released shortly:
 * Audio Mute needs to be implemented
 * Video Mute needs to be implemented
-* Does not allow rejoining a room (reports back room is full error)
