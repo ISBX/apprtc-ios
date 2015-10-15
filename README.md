@@ -10,16 +10,18 @@ Included in this Xcode project is a native Storyboard based Room Locator and Vid
 ## Features
 * Fully native objective-c 64-bit support
 * pre-compiled libWebRTC.a (saves you hours of compiling)
-* Cocoa Pod 
+* Starting in v1.0.2 we are not referencing pod libjingle_peerconnection maintained by Pristine.io that has a an automated libWebRTC.a build process
+* Utilizes Cocoa Pod dependency management
 * View Controllers to easily drop into your own project
 * Exposed APIs to easily customize and adapt to your needs (see below for more details)
-* Supports the most recent https://apprtc.appspot.com (March 2015)
+* Supports the most recent https://apprtc.appspot.com (October 2015)
 * We also have a fork of the [Google AppRTC Web Server](https://github.com/ISBX/apprtc-server) that maintains full compatibility with this project
 
 ## Notes
 The following resources were useful in helping get this project to where it is today:
 * [How to get started with WebRTC and iOS without wasting 10 hours of your life](http://ninjanetic.com/how-to-get-started-with-webrtc-and-ios-without-wasting-10-hours-of-your-life/)
 * [hiroeorz's AppRTCDemo Project](https://github.com/hiroeorz/AppRTCDemo)
+* [Pristine.io Automated WebRTC Building](http://tech.pristine.io/automated-webrtc-building/)
 
 ## Running the AppRTC App on your iOS Device
 To run the app on your iPhone or iPad you can fork this repository and open the `AppRTC.xcworkspace` in Xcode and compile onto your iOS Device to check it out. By default the server address is set to https://apprtc.appspot.com.
@@ -57,7 +59,7 @@ To do this, perform the following:
 
 1. In your ViewController or whatever class you are using that contains the 2 views defined above add the following headers imports:
  ```objective-c
-#import <AppRTC/RTCEAGLVideoView.h>
+#import <libjingle_peerconnection/RTCEAGLVideoView.h>
 #import <AppRTC/ARDAppClient.h>
 ```
 
