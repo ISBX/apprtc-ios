@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import <AppRTC/RTCEAGLVideoView.h>
+#import <libjingle_peerconnection/RTCEAGLVideoView.h>
 #import <AppRTC/ARDAppClient.h>
 
 @interface ARTCVideoChatViewController : UIViewController <ARDAppClientDelegate, RTCEAGLVideoViewDelegate>
