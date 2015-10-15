@@ -10,7 +10,7 @@ Included in this Xcode project is a native Storyboard based Room Locator and Vid
 ## Features
 * Fully native objective-c 64-bit support
 * pre-compiled libWebRTC.a (saves you hours of compiling)
-* Starting in v1.0.2 we are not referencing pod libjingle_peerconnection maintained by Pristine.io that has a an automated libWebRTC.a build process
+* Starting in v1.0.2 we are now referencing pod libjingle_peerconnection maintained by Pristine.io that has a an automated libWebRTC.a build process
 * Utilizes Cocoa Pod dependency management
 * View Controllers to easily drop into your own project
 * Exposed APIs to easily customize and adapt to your needs (see below for more details)
