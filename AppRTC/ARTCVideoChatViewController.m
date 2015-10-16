@@ -188,10 +188,7 @@
 
 - (void)appClient:(ARDAppClient *)client didReceiveRemoteVideoTrack:(RTCVideoTrack *)remoteVideoTrack {
     self.remoteVideoTrack = remoteVideoTrack;
-    //    [self.remoteView setFrame:CGRectMake(0, 0, 100, 100)];
-    //    RTCI420Frame* fram  = [RTCI420Frame new];
     
-    //    [self.remoteView renderFrame:fram];
     [self.remoteVideoTrack addRenderer:self.remoteView];
     
     [UIView animateWithDuration:0.4f animations:^{

@@ -47,7 +47,6 @@
 #import "RTCVideoCapturer.h"
 #import "RTCVideoTrack.h"
 
-
 // TODO(tkchin): move these to a configuration object.
 static NSString *kARDRoomServerHostUrl =
 @"https://apprtc.appspot.com";
@@ -76,6 +75,10 @@ static NSInteger kARDAppClientErrorInvalidRoom = -7;
 
 @interface ARDAppClient () <ARDWebSocketChannelDelegate,
 RTCPeerConnectionDelegate, RTCSessionDescriptionDelegate>
+{
+    UIDeviceOrientation currentOrientation;
+    BOOL isForeGround;
+}
 @property(nonatomic, strong) ARDWebSocketChannel *channel;
 @property(nonatomic, strong) RTCPeerConnection *peerConnection;
 @property(nonatomic, strong) RTCPeerConnectionFactory *factory;
@@ -118,87 +121,96 @@ RTCPeerConnectionDelegate, RTCSessionDescriptionDelegate>
         _messageQueue = [NSMutableArray array];
         _iceServers = [NSMutableArray arrayWithObject:[self defaultSTUNServer]];
         _serverHostUrl = kARDRoomServerHostUrl;
+        currentOrientation = [[UIDevice currentDevice] orientation];
+        isForeGround = YES;
         
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(orientationChanged:)
-                                                     name:@"UIDeviceOrientationDidChangeNotification"
-                                                   object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(orientationChanged:) name:UIDeviceOrientationDidChangeNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleCaptureSessionStopRunning:) name:AVCaptureSessionDidStopRunningNotification object:nil];
         
-        
-        //AVCaptureSessionRuntimeErrorNotification
-        //          [[NSNotificationCenter defaultCenter] addObserver:self
-        //                                                   selector:@selector(handleErrorNotificationVideoCapture:)
-        //                                                       name:AVCaptureSessionRuntimeErrorNotification
-        //                                                     object:nil];
-        
-        
-        //        [[NSNotificationCenter defaultCenter] addObserver:self
-        //                                                 selector:@selector(handleCaptureSessionEnded:)
-        //                                                     name:AVCaptureSessionInterruptionEndedNotification
-        //                                                   object:nil];
-        
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(handleCaptureSessionStopRunning:)
-                                                     name:
-         AVCaptureSessionDidStopRunningNotification
-                                                   object:nil];
-        
-        //        [[NSNotificationCenter defaultCenter] addObserver:self
-        //                                                 selector:@selector(handleCaptureSessionStartRunning:)
-        //                                                     name:         AVCaptureSessionDidStartRunningNotification
-        //                                                   object:nil];
-        
+        // Init observers to handle going into fore- and back- ground
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didEnterBackgroundVideo) name:UIApplicationWillResignActiveNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didEnterForegroundVideo) name:UIApplicationDidBecomeActiveNotification object:nil];
     }
     return self;
 }
 
 - (void)dealloc {
-    [ [NSNotificationCenter defaultCenter] removeObserver:self name:@"UIDeviceOrientationDidChangeNotification" object:nil ];
+#ifdef DEBUG
+    NSLog(@"\n\n ===== ARDAppClient dealloc ======== \n\n ");
+#endif
+    [ [NSNotificationCenter defaultCenter] removeObserver:self name:UIDeviceOrientationDidChangeNotification object:nil];
     [ [NSNotificationCenter defaultCenter] removeObserver:self name:AVCaptureSessionDidStopRunningNotification object:nil ];
+    
+    [ [NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillResignActiveNotification object:nil];
+    [ [NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidEnterBackgroundNotification object:nil ];
+    [ [NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidBecomeActiveNotification object:nil ];
+    
     [self disconnect];
 }
 
-- (void)handleErrorNotificationVideoCapture:(NSNotification *)notification {
-    NSDictionary *userInfo = notification.userInfo;
-    NSError* error = userInfo[AVCaptureSessionErrorKey];
-    NSLog(@"\n handle video error method: %@", error);
-    if (error.code == -11819) {
-        [self orientationChanged:nil];
-    }
-    
-}
-
-//- (void)handleCaptureSessionStartRunning:(NSNotification *)notification
-//{
-//
-//}
+#pragma mark -
 
 - (void)handleCaptureSessionStopRunning:(NSNotification *)notification
 {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        RTCMediaStream* localStream = [self createLocalMediaStream];
-        [_peerConnection addStream:localStream];
-    });
+//        dispatch_async(dispatch_get_main_queue(), ^{
+    if (isForeGround) {
+        [self restoreAllMediaStreams];
+    }
+//        });
 }
-
-//- (void)handleCaptureSessionEnded:(NSNotification *)notification
-//{
-//
-//}
 
 - (void)orientationChanged:(NSNotification *)notification {
-    
     UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
-    if (UIDeviceOrientationIsLandscape(orientation) || UIDeviceOrientationIsPortrait(orientation)) {
-        //Remove current video track
-        RTCMediaStream *localStream = _peerConnection.localStreams[0];
-        
-        RTCVideoTrack* formerVideoTrack = localStream.videoTracks[0];
-        [ localStream removeVideoTrack:formerVideoTrack ];
-        [_peerConnection removeStream:localStream];
-        [_delegate didRemoveLocalVideoTrack:formerVideoTrack];
+    
+    if (orientation == UIDeviceOrientationLandscapeLeft || orientation == UIDeviceOrientationLandscapeRight || orientation == UIDeviceOrientationPortrait) {
+        if (currentOrientation == orientation) {
+            return;
+        }
+        currentOrientation = orientation;
+        [self cleanUpAllMediaStreams];
     }
 }
+
+- (void)didEnterForegroundVideo {
+    isForeGround = YES;
+    [self restoreAllMediaStreams];
+}
+
+- (void)didEnterBackgroundVideo {
+    isForeGround = NO;
+    [self cleanUpAllMediaStreams];
+}
+
+
+- (void)restoreAllMediaStreams {
+    if (self.peerConnection && _peerConnection.localStreams.count == 0){
+        RTCMediaStream* localStream = [self createLocalMediaStream];
+        [self.peerConnection addStream:localStream];
+    }
+}
+
+-(void)cleanUpAllMediaStreams
+{
+    //Remove current video track
+    if (_peerConnection.localStreams.count == 0) {
+        return;
+    }
+    RTCMediaStream *localStream = _peerConnection.localStreams[0];
+    if (localStream.videoTracks.count == 0) {
+        return;
+    }
+    RTCVideoTrack* formerVideoTrack = localStream.videoTracks[0];
+    [ localStream removeVideoTrack:formerVideoTrack ];
+    [_delegate didRemoveLocalVideoTrack:formerVideoTrack];
+    
+    if (localStream.audioTracks.count > 0) {
+        RTCAudioTrack* formerAudioTrack = localStream.audioTracks[0];
+        [localStream removeAudioTrack:formerAudioTrack];
+    }
+    
+    [_peerConnection removeStream:localStream];
+}
+
 
 - (void)setState:(ARDAppClientState)state {
     if (_state == state) {
@@ -267,7 +279,7 @@ RTCPeerConnectionDelegate, RTCSessionDescriptionDelegate>
     if (_state == kARDAppClientStateDisconnected) {
         return;
     }
-    if ( self.isRegisteredWithRoomServer ) {
+    if (self.isRegisteredWithRoomServer) {
         [self unregisterWithRoomServer];
     }
     if (_channel) {
@@ -329,30 +341,11 @@ didReceiveMessage:(ARDSignalingMessage *)message {
 
 - (void)peerConnection:(RTCPeerConnection *)peerConnection
  signalingStateChanged:(RTCSignalingState)stateChanged {
-    
-    switch (stateChanged) {
-        case RTCSignalingStable:
-            NSLog(@"Signaling state changed: RTCSignalingStable");
-            break;
-        case RTCSignalingHaveLocalOffer:
-            NSLog(@"Signaling state changed: RTCSignalingHaveLocalOffer");
-            break;
-        case RTCSignalingHaveRemoteOffer:
-            NSLog(@"Signaling state changed: RTCSignalingHaveRemoteOffer");
-            break;
-        case RTCSignalingHaveLocalPrAnswer:
-            NSLog(@"Signaling state changed: RTCSignalingHaveLocalPrAnswer");
-            break;
-        case RTCSignalingHaveRemotePrAnswer:
-            NSLog(@"Signaling state changed: RTCSignalingHaveRemotePrAnswer");
-            break;
-        default:
-            NSLog(@"Signaling state changed: %d", stateChanged);
-            break;
-    }
+    NSLog(@"Signaling state changed: %d", stateChanged);
 }
 
-- (void)peerConnection:(RTCPeerConnection *)peerConnection           addedStream:(RTCMediaStream *)stream {
+- (void)peerConnection:(RTCPeerConnection *)peerConnection
+           addedStream:(RTCMediaStream *)stream {
     dispatch_async(dispatch_get_main_queue(), ^{
         NSLog(@"Received %lu video tracks and %lu audio tracks",
               (unsigned long)stream.videoTracks.count,
@@ -369,55 +362,26 @@ didReceiveMessage:(ARDSignalingMessage *)message {
     NSLog(@"Stream was removed.");
 }
 
-- (void)peerConnectionOnRenegotiationNeeded:(RTCPeerConnection *)peerConnection {
+- (void)peerConnectionOnRenegotiationNeeded:
+(RTCPeerConnection *)peerConnection {
     NSLog(@"WARNING: Renegotiation needed but unimplemented.");
-    
 }
 
 - (void)peerConnection:(RTCPeerConnection *)peerConnection
   iceConnectionChanged:(RTCICEConnectionState)newState {
-    switch (newState) {
-        case RTCICEConnectionNew:
-            NSLog(@"ICE state changed: RTCICEConnectionNew");
-            break;
-        case RTCICEConnectionChecking:
-            NSLog(@"ICE state changed: RTCICEConnectionChecking");
-            break;
-        case RTCICEConnectionConnected:
-            NSLog(@"ICE state changed: RTCICEConnectionConnected");
-            break;
-        case RTCICEConnectionCompleted:
-            NSLog(@"ICE state changed: RTCICEConnectionCompleted");
-            break;
-        case RTCICEConnectionFailed:
-            NSLog(@"ICE state changed: RTCICEConnectionFailed");
-            break;
-            
-        default:
-            NSLog(@"ICE state changed: %d", newState);
-            break;
-    }
+    NSLog(@"ICE state changed: %d", newState);
 }
 
 - (void)peerConnection:(RTCPeerConnection *)peerConnection
    iceGatheringChanged:(RTCICEGatheringState)newState {
-    switch (newState) {
-        case RTCICEGatheringGathering:
-            NSLog(@"ICE gathering state changed: RTCICEGatheringGathering");
-            break;
-        case RTCICEGatheringComplete:
-            NSLog(@"ICE gathering state changed: RTCICEGatheringComplete");
-            break;
-        default:
-            NSLog(@"ICE gathering state changed: %d", newState);
-            break;
-    }
+    NSLog(@"ICE gathering state changed: %d", newState);
 }
 
 - (void)peerConnection:(RTCPeerConnection *)peerConnection
        gotICECandidate:(RTCICECandidate *)candidate {
     dispatch_async(dispatch_get_main_queue(), ^{
-        ARDICECandidateMessage *message = [[ARDICECandidateMessage alloc] initWithCandidate:candidate];
+        ARDICECandidateMessage *message =
+        [[ARDICECandidateMessage alloc] initWithCandidate:candidate];
         [self sendSignalingMessage:message];
     });
 }
@@ -560,6 +524,7 @@ didSetSessionDescriptionWithError:(NSError *)error {
         [self sendSignalingMessageToCollider:message];
     }
 }
+
 
 - (RTCVideoTrack *)createLocalVideoTrack {
     // The iOS simulator doesn't provide any sort of camera capture
@@ -756,29 +721,11 @@ didSetSessionDescriptionWithError:(NSError *)error {
 #pragma mark - Defaults
 
 - (RTCMediaConstraints *)defaultMediaStreamConstraints {
-    //
-    RTCPair *localVideoMaxWidth = [[RTCPair alloc] initWithKey:@"maxWidth" value:@"320"];
-    
-    RTCPair *localVideoMinWidth = [[RTCPair alloc] initWithKey:@"minWidth" value:@"320"];
-    
-    RTCPair *localVideoMaxHeight = [[RTCPair alloc] initWithKey:@"maxHeight" value:@"240"];
-    
-    RTCPair *localVideoMinHeight = [[RTCPair alloc] initWithKey:@"minHeight" value:@"240"];
-    
-    //    RTCPair *localVideoMaxFrameRate = [[RTCPair alloc] initWithKey:@"maxFrameRate" value:@"30"];
-    //
-    //    RTCPair *localVideoMinFrameRate = [[RTCPair alloc] initWithKey:@"minFrameRate" value:@"5"];
-    //
-    //    RTCPair *localVideoGoogLeakyBucket = [[RTCPair alloc] initWithKey:@"googLeakyBucket" value:@"true"];
-    
-    RTCMediaConstraints *videoSourceConstraints = [[RTCMediaConstraints alloc] initWithMandatoryConstraints:@[localVideoMaxHeight, localVideoMaxWidth, localVideoMinHeight, localVideoMinWidth, /*localVideoMinFrameRate, localVideoMaxFrameRate, localVideoGoogLeakyBucket*/] optionalConstraints:nil];
-    
-    //
-    //  RTCMediaConstraints* constraints =
-    //      [[RTCMediaConstraints alloc]
-    //          initWithMandatoryConstraints:nil
-    //                   optionalConstraints:nil];
-    return videoSourceConstraints;
+    RTCMediaConstraints* constraints =
+    [[RTCMediaConstraints alloc]
+     initWithMandatoryConstraints:nil
+     optionalConstraints:nil];
+    return constraints;
 }
 
 - (RTCMediaConstraints *)defaultAnswerConstraints {
