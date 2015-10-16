@@ -1,7 +1,6 @@
 GCC_PREPROCESSOR_DEFINITIONS = $(inherited) COCOAPODS=1
-HEADER_SEARCH_PATHS = "${PODS_ROOT}/Headers/Public" "${PODS_ROOT}/Headers/Public/AppRTC"
-LIBRARY_SEARCH_PATHS = "$(PODS_ROOT)/../Lib"
-OTHER_CFLAGS = $(inherited) -isystem "${PODS_ROOT}/Headers/Public" -isystem "${PODS_ROOT}/Headers/Public/AppRTC"
-OTHER_LDFLAGS = -ObjC -l"Pods-AppRTC" -l"WebRTC" -l"c++" -l"icucore" -l"sqlite3" -l"stdc++.6" -framework "AVFoundation" -framework "AudioToolbox" -framework "CFNetwork" -framework "CoreAudio" -framework "CoreGraphics" -framework "CoreMedia" -framework "CoreVideo" -framework "GLKit" -framework "OpenGLES" -framework "QuartzCore" -framework "Security"
-OTHER_LIBTOOLFLAGS = $(OTHER_LDFLAGS)
+HEADER_SEARCH_PATHS = "${PODS_ROOT}/Headers/libjingle_peerconnection" $(inherited) "${PODS_ROOT}/Headers/Public" "${PODS_ROOT}/Headers/Public/AppRTC" "${PODS_ROOT}/Headers/Public/SocketRocket" "${PODS_ROOT}/Headers/Public/libjingle_peerconnection"
+LIBRARY_SEARCH_PATHS = "$(PODS_ROOT)/libjingle_peerconnection" $(inherited) "${PODS_ROOT}/libjingle_peerconnection/libjingle_peerconnection"
+OTHER_CFLAGS = $(inherited) -isystem "${PODS_ROOT}/Headers/Public" -isystem "${PODS_ROOT}/Headers/Public/AppRTC" -isystem "${PODS_ROOT}/Headers/Public/SocketRocket" -isystem "${PODS_ROOT}/Headers/Public/libjingle_peerconnection"
+OTHER_LDFLAGS = $(inherited) -ObjC -l"AppRTC" -l"SocketRocket" -l"WebRTC" -l"c" -l"c++" -l"icucore" -l"sqlite3" -l"stdc++" -l"stdc++.6" -framework "AVFoundation" -framework "AudioToolbox" -framework "CFNetwork" -framework "CoreAudio" -framework "CoreGraphics" -framework "CoreMedia" -framework "CoreVideo" -framework "GLKit" -framework "OpenGLES" -framework "QuartzCore" -framework "Security" -framework "UIKit" -framework "VideoToolbox"
 PODS_ROOT = ${SRCROOT}/Pods
