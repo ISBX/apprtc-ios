@@ -50,8 +50,6 @@ didReceiveLocalVideoTrack:(RTCVideoTrack *)localVideoTrack;
 - (void)appClient:(ARDAppClient *)client
 didReceiveRemoteVideoTrack:(RTCVideoTrack *)remoteVideoTrack;
 
-- (void)didRemoveLocalVideoTrack:(RTCVideoTrack *)remoteVideoTrack;
-
 - (void)appClient:(ARDAppClient *)client
          didError:(NSError *)error;
 

@@ -78,6 +78,7 @@ RTCPeerConnectionDelegate, RTCSessionDescriptionDelegate>
 {
     UIDeviceOrientation currentOrientation;
     BOOL isForeGround;
+    AVCaptureSession* sessionCurrent;
 }
 @property(nonatomic, strong) ARDWebSocketChannel *channel;
 @property(nonatomic, strong) RTCPeerConnection *peerConnection;
@@ -126,6 +127,7 @@ RTCPeerConnectionDelegate, RTCSessionDescriptionDelegate>
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(orientationChanged:) name:UIDeviceOrientationDidChangeNotification object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleCaptureSessionStopRunning:) name:AVCaptureSessionDidStopRunningNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleStartCaptureSession:) name:AVCaptureSessionDidStartRunningNotification object:nil];
         
         // Init observers to handle going into fore- and back- ground
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didEnterBackgroundVideo) name:UIApplicationWillResignActiveNotification object:nil];
@@ -140,9 +142,9 @@ RTCPeerConnectionDelegate, RTCSessionDescriptionDelegate>
 #endif
     [ [NSNotificationCenter defaultCenter] removeObserver:self name:UIDeviceOrientationDidChangeNotification object:nil];
     [ [NSNotificationCenter defaultCenter] removeObserver:self name:AVCaptureSessionDidStopRunningNotification object:nil ];
+    [ [NSNotificationCenter defaultCenter] removeObserver:self name:AVCaptureSessionDidStartRunningNotification object:nil ];
     
     [ [NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillResignActiveNotification object:nil];
-    [ [NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidEnterBackgroundNotification object:nil ];
     [ [NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidBecomeActiveNotification object:nil ];
     
     [self disconnect];
@@ -150,18 +152,26 @@ RTCPeerConnectionDelegate, RTCSessionDescriptionDelegate>
 
 #pragma mark -
 
-- (void)handleCaptureSessionStopRunning:(NSNotification *)notification
-{
-//        dispatch_async(dispatch_get_main_queue(), ^{
-    if (isForeGround) {
-        [self restoreAllMediaStreams];
+- (void)handleCaptureSessionStopRunning:(NSNotification *)notification {
+    if ([NSThread isMainThread]) {
+        if (isForeGround) {
+            [self restoreAllMediaStreams];
+        }
+    } else {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (isForeGround) {
+                [self restoreAllMediaStreams];
+            }
+        });
     }
-//        });
+}
+
+- (void)handleStartCaptureSession:(NSNotification *)notification {
+    sessionCurrent = notification.object;
 }
 
 - (void)orientationChanged:(NSNotification *)notification {
     UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
-    
     if (orientation == UIDeviceOrientationLandscapeLeft || orientation == UIDeviceOrientationLandscapeRight || orientation == UIDeviceOrientationPortrait) {
         if (currentOrientation == orientation) {
             return;
@@ -189,8 +199,7 @@ RTCPeerConnectionDelegate, RTCSessionDescriptionDelegate>
     }
 }
 
--(void)cleanUpAllMediaStreams
-{
+-(void)cleanUpAllMediaStreams {
     //Remove current video track
     if (_peerConnection.localStreams.count == 0) {
         return;
@@ -199,9 +208,7 @@ RTCPeerConnectionDelegate, RTCSessionDescriptionDelegate>
     if (localStream.videoTracks.count == 0) {
         return;
     }
-    RTCVideoTrack* formerVideoTrack = localStream.videoTracks[0];
-    [ localStream removeVideoTrack:formerVideoTrack ];
-    [_delegate didRemoveLocalVideoTrack:formerVideoTrack];
+    [localStream removeVideoTrack:localStream.videoTracks[0]];
     
     if (localStream.audioTracks.count > 0) {
         RTCAudioTrack* formerAudioTrack = localStream.audioTracks[0];
@@ -209,6 +216,9 @@ RTCPeerConnectionDelegate, RTCSessionDescriptionDelegate>
     }
     
     [_peerConnection removeStream:localStream];
+    if (sessionCurrent) {
+        [sessionCurrent stopRunning];
+    }
 }
 
 

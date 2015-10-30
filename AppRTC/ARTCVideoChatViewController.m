@@ -39,15 +39,10 @@
     //Getting Orientation change
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(orientationChanged:)
-                                                 name:@"UIDeviceOrientationDidChangeNotification"
+                                                 name:UIDeviceOrientationDidChangeNotification
                                                object:nil];
-    //
-    //
-    //    //AVCaptureSessionRuntimeErrorNotification
-    //    [[NSNotificationCenter defaultCenter] addObserver:self
-    //                                             selector:@selector(didChangeVideoSizes)
-    //                                                 name:AVCaptureSessionRuntimeErrorNotification
-    //                                               object:nil];
+
+    
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -73,7 +68,7 @@
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"UIDeviceOrientationDidChangeNotification" object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIDeviceOrientationDidChangeNotification object:nil];
     [self disconnect];
 }
 
@@ -152,12 +147,6 @@
     [self.navigationController popToRootViewControllerAnimated:YES];
 }
 
--(void)didChangeVideoSizes
-{
-    [self videoView:self.localView didChangeVideoSize:self.localVideoSize];
-    [self videoView:self.remoteView didChangeVideoSize:self.remoteVideoSize];
-}
-
 
 #pragma mark - ARDAppClientDelegate
 
@@ -201,15 +190,6 @@
     }];
 }
 
--(void)didRemoveLocalVideoTrack:(RTCVideoTrack *)remoteVideoTrack
-{
-    if (self.localVideoTrack == remoteVideoTrack) {
-        [remoteVideoTrack removeRenderer:self.localView];
-        self.localVideoTrack = remoteVideoTrack = nil;
-        [self.localView renderFrame:nil];
-    }
-}
-
 - (void)appClient:(ARDAppClient *)client didError:(NSError *)error {
     UIAlertView* alertView = [[UIAlertView alloc] initWithTitle:nil
                                                         message:[NSString stringWithFormat:@"%@", error]
@@ -223,9 +203,8 @@
 #pragma mark - RTCEAGLVideoViewDelegate
 
 - (void)videoView:(RTCEAGLVideoView *)videoView didChangeVideoSize:(CGSize)size {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
-        //    [UIView animateWithDuration:0.4f animations:^{
+    UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
+    [UIView animateWithDuration:0.4f animations:^{
         CGFloat containerWidth = self.view.frame.size.width;
         CGFloat containerHeight = self.view.frame.size.height;
         CGSize defaultAspectRatio = CGSizeMake(4, 3);
@@ -269,7 +248,9 @@
             [self.remoteViewLeftConstraint setConstant:containerWidth/2.0f - videoFrame.size.width/2.0f]; //center
             [self.remoteViewRightConstraint setConstant:containerWidth/2.0f - videoFrame.size.width/2.0f]; //center
         }
-    });
+        [self.view layoutIfNeeded];
+    }];
+
 }
 
 
