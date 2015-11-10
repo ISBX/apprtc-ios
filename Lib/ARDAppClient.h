@@ -71,6 +71,10 @@ typedef NS_ENUM(NSInteger, ARDAppClientState) {
 - (void)connectToRoomWithId:(NSString *)roomId
                     options:(NSDictionary *)options;
 
+// Mute and mute Audio-In
+- (void)muteAudioIn;
+- (void)unmuteAudioIn;
+
 // Disconnects from the AppRTC servers and any connected clients.
 - (void)disconnect;
 

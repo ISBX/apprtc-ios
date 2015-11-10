@@ -90,6 +90,7 @@ static NSInteger kARDAppClientErrorInvalidRoom = -7;
 @property(nonatomic, strong) NSMutableArray *iceServers;
 @property(nonatomic, strong) NSURL *webSocketURL;
 @property(nonatomic, strong) NSURL *webSocketRestURL;
+@property(nonatomic, strong) RTCAudioTrack *defaultAudioTrack;
 @end
 
 @implementation ARDAppClient
@@ -697,6 +698,23 @@ static NSInteger kARDAppClientErrorInvalidRoom = -7;
   return [[RTCICEServer alloc] initWithURI:defaultSTUNServerURL
                                   username:@""
                                   password:@""];
+}
+
+#pragma mark - Audio in mute/unmute
+- (void)muteAudioIn{
+    NSLog(@"audio in muted");
+    RTCMediaStream *localStream = _peerConnection.localStreams[0];
+    self.defaultAudioTrack = localStream.audioTracks[0];
+    [localStream removeAudioTrack:localStream.audioTracks[0]];
+    [_peerConnection removeStream:localStream];
+    [_peerConnection addStream:localStream];
+}
+- (void)unmuteAudioIn{
+    NSLog(@"audio in muted");
+    RTCMediaStream* localStream = _peerConnection.localStreams[0];
+    [localStream addAudioTrack:self.defaultAudioTrack];
+    [_peerConnection removeStream:localStream];
+    [_peerConnection addStream:localStream];
 }
 
 @end
