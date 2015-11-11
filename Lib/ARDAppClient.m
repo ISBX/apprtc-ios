@@ -91,6 +91,8 @@ static NSInteger kARDAppClientErrorInvalidRoom = -7;
 @property(nonatomic, strong) NSURL *webSocketURL;
 @property(nonatomic, strong) NSURL *webSocketRestURL;
 @property(nonatomic, strong) RTCAudioTrack *defaultAudioTrack;
+@property(nonatomic, strong) RTCVideoTrack *defaultVideoTrack;
+
 @end
 
 @implementation ARDAppClient
@@ -717,4 +719,20 @@ static NSInteger kARDAppClientErrorInvalidRoom = -7;
     [_peerConnection addStream:localStream];
 }
 
+#pragma mark - Video mute/unmute
+- (void)muteVideoIn{
+    NSLog(@"audio-in muted");
+    RTCMediaStream *localStream = _peerConnection.localStreams[0];
+    self.defaultVideoTrack = localStream.videoTracks[0];
+    [localStream removeVideoTrack:localStream.videoTracks[0]];
+    [_peerConnection removeStream:localStream];
+    [_peerConnection addStream:localStream];
+}
+- (void)unmuteVideoIn{
+    NSLog(@"video-in muted");
+    RTCMediaStream* localStream = _peerConnection.localStreams[0];
+    [localStream addVideoTrack:self.defaultVideoTrack];
+    [_peerConnection removeStream:localStream];
+    [_peerConnection addStream:localStream];
+}
 @end
