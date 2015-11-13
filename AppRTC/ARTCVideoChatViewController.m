@@ -17,6 +17,9 @@
     [super viewDidLoad];
     
     self.isZoom = NO;
+    self.isAudioMute = NO;
+    self.isVideoMute = NO;
+    
     [self.audioButton.layer setCornerRadius:20.0f];
     [self.videoButton.layer setCornerRadius:20.0f];
     [self.hangupButton.layer setCornerRadius:20.0f];
@@ -133,7 +136,17 @@
 }
 
 - (IBAction)audioButtonPressed:(id)sender {
-    //TODO: Implement Audio Toggle
+    //TODO: this change not work on simulator (it will crash)
+    UIButton *audioButton = sender;
+    if(self.isAudioMute){
+        [self.client muteAudioIn];
+        [audioButton setImage:[UIImage imageNamed:@"audioOn"] forState:UIControlStateNormal];
+        self.isAudioMute = NO;
+    }else{
+        [self.client unmuteAudioIn];
+        [audioButton setImage:[UIImage imageNamed:@"audioOff"] forState:UIControlStateNormal];
+        self.isAudioMute = YES;
+    }
 }
 
 - (IBAction)videoButtonPressed:(id)sender {
