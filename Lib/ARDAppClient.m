@@ -87,6 +87,7 @@ static NSInteger kARDAppClientErrorInvalidRoom = -7;
 @property(nonatomic, strong) NSString *roomId;
 @property(nonatomic, strong) NSString *clientId;
 @property(nonatomic, assign) BOOL isInitiator;
+@property(nonatomic, assign) BOOL isSpeakerEnabled;
 @property(nonatomic, strong) NSMutableArray *iceServers;
 @property(nonatomic, strong) NSURL *webSocketURL;
 @property(nonatomic, strong) NSURL *webSocketRestURL;
@@ -109,6 +110,7 @@ static NSInteger kARDAppClientErrorInvalidRoom = -7;
 @synthesize roomId = _roomId;
 @synthesize clientId = _clientId;
 @synthesize isInitiator = _isInitiator;
+@synthesize isSpeakerEnabled = _isSpeakerEnabled;
 @synthesize iceServers = _iceServers;
 @synthesize webSocketURL = _websocketURL;
 @synthesize webSocketRestURL = _websocketRestURL;
@@ -120,6 +122,7 @@ static NSInteger kARDAppClientErrorInvalidRoom = -7;
     _messageQueue = [NSMutableArray array];
     _iceServers = [NSMutableArray arrayWithObject:[self defaultSTUNServer]];
     _serverHostUrl = kARDRoomServerHostUrl;
+    _isSpeakerEnabled = YES;
       
       [[NSNotificationCenter defaultCenter] addObserver:self
                                                selector:@selector(orientationChanged:)
@@ -293,6 +296,8 @@ static NSInteger kARDAppClientErrorInvalidRoom = -7;
     if (stream.videoTracks.count) {
       RTCVideoTrack *videoTrack = stream.videoTracks[0];
       [_delegate appClient:self didReceiveRemoteVideoTrack:videoTrack];
+      if (_isSpeakerEnabled) [self enableSpeaker]; //Use the "handsfree" speaker instead of the ear speaker.
+
     }
   });
 }
@@ -502,8 +507,9 @@ static NSInteger kARDAppClientErrorInvalidRoom = -7;
         [localStream addVideoTrack:localVideoTrack];
         [_delegate appClient:self didReceiveLocalVideoTrack:localVideoTrack];
     }
-
+    
     [localStream addAudioTrack:[_factory audioTrackWithID:@"ARDAMSa0"]];
+    if (_isSpeakerEnabled) [self enableSpeaker];
     return localStream;
 }
 
@@ -702,34 +708,35 @@ static NSInteger kARDAppClientErrorInvalidRoom = -7;
                                   password:@""];
 }
 
-#pragma mark - Audio in mute/unmute
-- (void)muteAudioIn{
-    NSLog(@"audio in muted");
+#pragma mark - Audio mute/unmute
+- (void)muteAudioIn {
+    NSLog(@"audio muted");
     RTCMediaStream *localStream = _peerConnection.localStreams[0];
     self.defaultAudioTrack = localStream.audioTracks[0];
     [localStream removeAudioTrack:localStream.audioTracks[0]];
     [_peerConnection removeStream:localStream];
     [_peerConnection addStream:localStream];
 }
-- (void)unmuteAudioIn{
-    NSLog(@"audio in muted");
+- (void)unmuteAudioIn {
+    NSLog(@"audio unmuted");
     RTCMediaStream* localStream = _peerConnection.localStreams[0];
     [localStream addAudioTrack:self.defaultAudioTrack];
     [_peerConnection removeStream:localStream];
     [_peerConnection addStream:localStream];
+    if (_isSpeakerEnabled) [self enableSpeaker];
 }
 
 #pragma mark - Video mute/unmute
-- (void)muteVideoIn{
-    NSLog(@"audio-in muted");
+- (void)muteVideoIn {
+    NSLog(@"video muted");
     RTCMediaStream *localStream = _peerConnection.localStreams[0];
     self.defaultVideoTrack = localStream.videoTracks[0];
     [localStream removeVideoTrack:localStream.videoTracks[0]];
     [_peerConnection removeStream:localStream];
     [_peerConnection addStream:localStream];
 }
-- (void)unmuteVideoIn{
-    NSLog(@"video-in muted");
+- (void)unmuteVideoIn {
+    NSLog(@"video unmuted");
     RTCMediaStream* localStream = _peerConnection.localStreams[0];
     [localStream addVideoTrack:self.defaultVideoTrack];
     [_peerConnection removeStream:localStream];
@@ -784,4 +791,17 @@ static NSInteger kARDAppClientErrorInvalidRoom = -7;
     [_peerConnection removeStream:localStream];
     [_peerConnection addStream:localStream];
 }
+
+#pragma mark - enable/disable speaker
+
+- (void)enableSpeaker {
+    [[AVAudioSession sharedInstance] overrideOutputAudioPort:AVAudioSessionPortOverrideSpeaker error:nil];
+    _isSpeakerEnabled = YES;
+}
+
+- (void)disableSpeaker {
+    [[AVAudioSession sharedInstance] overrideOutputAudioPort:AVAudioSessionPortOverrideNone error:nil];
+    _isSpeakerEnabled = NO;
+}
+
 @end

@@ -79,6 +79,10 @@ typedef NS_ENUM(NSInteger, ARDAppClientState) {
 - (void)muteVideoIn;
 - (void)unmuteVideoIn;
 
+// Enabling / Disabling Speakerphone
+- (void)enableSpeaker;
+- (void)disableSpeaker;
+
 // Swap camera functionality
 - (void)swapCameraToFront;
 - (void)swapCameraToBack;
