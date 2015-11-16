@@ -14,7 +14,7 @@
             buildForArchiving = "YES">
             <BuildableReference
                BuildableIdentifier = 'primary'
-               BlueprintIdentifier = 'D09D807A4A1179B5FC00510E'
+               BlueprintIdentifier = 'C87D0851BA029AC5972A3840'
                BlueprintName = 'AppRTC'
                ReferencedContainer = 'container:Pods.xcodeproj'
                BuildableName = 'libAppRTC.a'>
