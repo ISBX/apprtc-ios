@@ -8,6 +8,7 @@
 
 #import "ARTCVideoChatViewController.h"
 #import <AVFoundation/AVFoundation.h>
+#import "RTCI420Frame.h"
 
 #define SERVER_HOST_URL @"https://apprtc.appspot.com"
 
@@ -37,14 +38,19 @@
     //RTCEAGLVideoViewDelegate provides notifications on video frame dimensions
     [self.remoteView setDelegate:self];
     [self.localView setDelegate:self];
-
+    
     //Getting Orientation change
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(orientationChanged:)
                                                  name:@"UIDeviceOrientationDidChangeNotification"
                                                object:nil];
-
-    
+    //
+    //
+    //    //AVCaptureSessionRuntimeErrorNotification
+    //    [[NSNotificationCenter defaultCenter] addObserver:self
+    //                                             selector:@selector(didChangeVideoSizes)
+    //                                                 name:AVCaptureSessionRuntimeErrorNotification
+    //                                               object:nil];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -82,7 +88,7 @@
     [super didReceiveMemoryWarning];
 }
 
-- (void)orientationChanged:(NSNotification *)notification{
+- (void)orientationChanged:(NSNotification *)notification {
     [self videoView:self.localView didChangeVideoSize:self.localVideoSize];
     [self videoView:self.remoteView didChangeVideoSize:self.remoteVideoSize];
 }
@@ -159,6 +165,12 @@
     [self.navigationController popToRootViewControllerAnimated:YES];
 }
 
+-(void)didChangeVideoSizes
+{
+    [self videoView:self.localView didChangeVideoSize:self.localVideoSize];
+    [self videoView:self.remoteView didChangeVideoSize:self.remoteVideoSize];
+}
+
 
 #pragma mark - ARDAppClientDelegate
 
@@ -189,6 +201,10 @@
 
 - (void)appClient:(ARDAppClient *)client didReceiveRemoteVideoTrack:(RTCVideoTrack *)remoteVideoTrack {
     self.remoteVideoTrack = remoteVideoTrack;
+    //    [self.remoteView setFrame:CGRectMake(0, 0, 100, 100)];
+    //    RTCI420Frame* fram  = [RTCI420Frame new];
+    
+    //    [self.remoteView renderFrame:fram];
     [self.remoteVideoTrack addRenderer:self.remoteView];
     
     [UIView animateWithDuration:0.4f animations:^{
@@ -199,6 +215,15 @@
         [self.footerViewBottomConstraint setConstant:-80.0f];
         [self.view layoutIfNeeded];
     }];
+}
+
+-(void)didRemoveLocalVideoTrack:(RTCVideoTrack *)remoteVideoTrack
+{
+    if (self.localVideoTrack == remoteVideoTrack) {
+        [remoteVideoTrack removeRenderer:self.localView];
+        self.localVideoTrack = remoteVideoTrack = nil;
+        [self.localView renderFrame:nil];
+    }
 }
 
 - (void)appClient:(ARDAppClient *)client didError:(NSError *)error {
@@ -214,8 +239,9 @@
 #pragma mark - RTCEAGLVideoViewDelegate
 
 - (void)videoView:(RTCEAGLVideoView *)videoView didChangeVideoSize:(CGSize)size {
-    UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
-    [UIView animateWithDuration:0.4f animations:^{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
+        //    [UIView animateWithDuration:0.4f animations:^{
         CGFloat containerWidth = self.view.frame.size.width;
         CGFloat containerHeight = self.view.frame.size.height;
         CGSize defaultAspectRatio = CGSizeMake(4, 3);
@@ -226,12 +252,12 @@
             CGRect videoRect = self.view.bounds;
             if (self.remoteVideoTrack) {
                 videoRect = CGRectMake(0.0f, 0.0f, self.view.frame.size.width/4.0f, self.view.frame.size.height/4.0f);
-                if (orientation == UIDeviceOrientationLandscapeLeft || orientation == UIDeviceOrientationLandscapeRight) {
+                if ( orientation == UIDeviceOrientationLandscapeLeft || orientation == UIDeviceOrientationLandscapeRight ) {
                     videoRect = CGRectMake(0.0f, 0.0f, self.view.frame.size.height/4.0f, self.view.frame.size.width/4.0f);
                 }
             }
             CGRect videoFrame = AVMakeRectWithAspectRatioInsideRect(aspectRatio, videoRect);
-
+            
             //Resize the localView accordingly
             [self.localViewWidthConstraint setConstant:videoFrame.size.width];
             [self.localViewHeightConstraint setConstant:videoFrame.size.height];
@@ -242,7 +268,7 @@
                 [self.localViewBottomConstraint setConstant:containerHeight/2.0f - videoFrame.size.height/2.0f]; //center
                 [self.localViewRightConstraint setConstant:containerWidth/2.0f - videoFrame.size.width/2.0f]; //center
             }
-        } else if (videoView == self.remoteView) {
+        } else if ( videoView == self.remoteView ) {
             //Resize Remote View
             self.remoteVideoSize = size;
             CGSize aspectRatio = CGSizeEqualToSize(size, CGSizeZero) ? defaultAspectRatio : size;
@@ -258,11 +284,8 @@
             [self.remoteViewBottomConstraint setConstant:containerHeight/2.0f - videoFrame.size.height/2.0f];
             [self.remoteViewLeftConstraint setConstant:containerWidth/2.0f - videoFrame.size.width/2.0f]; //center
             [self.remoteViewRightConstraint setConstant:containerWidth/2.0f - videoFrame.size.width/2.0f]; //center
-            
         }
-        [self.view layoutIfNeeded];
-    }];
-
+    });
 }
 
 
