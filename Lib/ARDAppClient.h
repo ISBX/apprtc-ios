@@ -79,6 +79,10 @@ typedef NS_ENUM(NSInteger, ARDAppClientState) {
 - (void)muteVideoIn;
 - (void)unmuteVideoIn;
 
+// Swap camera functionality
+- (void)swapCameraToFront;
+- (void)swapCameraToBack;
+
 // Disconnects from the AppRTC servers and any connected clients.
 - (void)disconnect;
 

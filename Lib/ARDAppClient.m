@@ -735,4 +735,53 @@ static NSInteger kARDAppClientErrorInvalidRoom = -7;
     [_peerConnection removeStream:localStream];
     [_peerConnection addStream:localStream];
 }
+
+#pragma mark - swap camera
+- (RTCVideoTrack *)createLocalVideoTrackBackCamera {
+    RTCVideoTrack *localVideoTrack = nil;
+#if !TARGET_IPHONE_SIMULATOR && TARGET_OS_IPHONE
+    //AVCaptureDevicePositionFront
+    NSString *cameraID = nil;
+    for (AVCaptureDevice *captureDevice in
+         [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo]) {
+        if (captureDevice.position == AVCaptureDevicePositionBack) {
+            cameraID = [captureDevice localizedName];
+            break;
+        }
+    }
+    NSAssert(cameraID, @"Unable to get the back camera id");
+    
+    RTCVideoCapturer *capturer = [RTCVideoCapturer capturerWithDeviceName:cameraID];
+    RTCMediaConstraints *mediaConstraints = [self defaultMediaStreamConstraints];
+    RTCVideoSource *videoSource = [_factory videoSourceWithCapturer:capturer constraints:mediaConstraints];
+    localVideoTrack = [_factory videoTrackWithID:@"ARDAMSv0" source:videoSource];
+#endif
+    return localVideoTrack;
+}
+- (void)swapCameraToFront{
+    RTCMediaStream *localStream = _peerConnection.localStreams[0];
+    [localStream removeVideoTrack:localStream.videoTracks[0]];
+    
+    RTCVideoTrack *localVideoTrack = [self createLocalVideoTrack];
+
+    if (localVideoTrack) {
+        [localStream addVideoTrack:localVideoTrack];
+        [_delegate appClient:self didReceiveLocalVideoTrack:localVideoTrack];
+    }
+    [_peerConnection removeStream:localStream];
+    [_peerConnection addStream:localStream];
+}
+- (void)swapCameraToBack{
+    RTCMediaStream *localStream = _peerConnection.localStreams[0];
+    [localStream removeVideoTrack:localStream.videoTracks[0]];
+    
+    RTCVideoTrack *localVideoTrack = [self createLocalVideoTrackBackCamera];
+    
+    if (localVideoTrack) {
+        [localStream addVideoTrack:localVideoTrack];
+        [_delegate appClient:self didReceiveLocalVideoTrack:localVideoTrack];
+    }
+    [_peerConnection removeStream:localStream];
+    [_peerConnection addStream:localStream];
+}
 @end
