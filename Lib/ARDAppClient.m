@@ -79,6 +79,9 @@ RTCPeerConnectionDelegate, RTCSessionDescriptionDelegate>
     UIDeviceOrientation currentOrientation;
     BOOL isForeGround;
     AVCaptureSession* sessionCurrent;
+
+    //Testing data
+    NSMutableArray * arrayCondidates;
 }
 @property(nonatomic, strong) ARDWebSocketChannel *channel;
 @property(nonatomic, strong) RTCPeerConnection *peerConnection;
@@ -128,7 +131,7 @@ RTCPeerConnectionDelegate, RTCSessionDescriptionDelegate>
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(orientationChanged:) name:UIDeviceOrientationDidChangeNotification object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleCaptureSessionStopRunning:) name:AVCaptureSessionDidStopRunningNotification object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleStartCaptureSession:) name:AVCaptureSessionDidStartRunningNotification object:nil];
-        
+
         // Init observers to handle going into fore- and back- ground
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didEnterBackgroundVideo) name:UIApplicationWillResignActiveNotification object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didEnterForegroundVideo) name:UIApplicationDidBecomeActiveNotification object:nil];
@@ -380,19 +383,41 @@ didReceiveMessage:(ARDSignalingMessage *)message {
 - (void)peerConnection:(RTCPeerConnection *)peerConnection
   iceConnectionChanged:(RTCICEConnectionState)newState {
     NSLog(@"ICE state changed: %d", newState);
+    switch (newState) {
+        case RTCICEConnectionCompleted:
+            NSLog(@"RTCICEConnectionCompleted");
+            break;
+        case RTCICEConnectionConnected:
+            NSLog(@"RTCICEConnectionConnected");
+            break;
+        default:
+            break;
+    }
 }
 
 - (void)peerConnection:(RTCPeerConnection *)peerConnection
    iceGatheringChanged:(RTCICEGatheringState)newState {
     NSLog(@"ICE gathering state changed: %d", newState);
+    switch (newState) {
+        case RTCICEGatheringComplete:
+            for (ARDICECandidateMessage *message in arrayCondidates) {
+                [self sendSignalingMessage:message];
+            }
+            break;
+    }
 }
+
 
 - (void)peerConnection:(RTCPeerConnection *)peerConnection
        gotICECandidate:(RTCICECandidate *)candidate {
     dispatch_async(dispatch_get_main_queue(), ^{
+        if (!arrayCondidates) {
+            arrayCondidates = [NSMutableArray array];
+        }
         ARDICECandidateMessage *message =
         [[ARDICECandidateMessage alloc] initWithCandidate:candidate];
-        [self sendSignalingMessage:message];
+        [arrayCondidates addObject:message];
+//        [self sendSignalingMessage:message];
     });
 }
 
@@ -481,8 +506,7 @@ didSetSessionDescriptionWithError:(NSError *)error {
 }
 
 - (void)sendOffer {
-    [_peerConnection createOfferWithDelegate:self
-                                 constraints:[self defaultOfferConstraints]];
+    [_peerConnection createOfferWithDelegate:self constraints:[self defaultOfferConstraints]];
 }
 
 - (void)waitForAnswer {
