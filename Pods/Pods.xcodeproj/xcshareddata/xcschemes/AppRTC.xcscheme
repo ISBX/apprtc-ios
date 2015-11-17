@@ -6,11 +6,19 @@
          <BuildActionEntry
             buildForRunning = "YES">
             <BuildableReference
+<<<<<<< HEAD
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "5C80AA751AAB5DF300F21FFA"
                BuildableName = "AppRTC.app"
                BlueprintName = "AppRTC"
                ReferencedContainer = "container:../AppRTC.xcodeproj">
+=======
+               BuildableIdentifier = 'primary'
+               BlueprintIdentifier = 'C87D0851BA029AC5972A3840'
+               BlueprintName = 'AppRTC'
+               ReferencedContainer = 'container:Pods.xcodeproj'
+               BuildableName = 'libAppRTC.a'>
+>>>>>>> ISBX/master
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>

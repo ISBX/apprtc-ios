@@ -18,6 +18,9 @@
     [super viewDidLoad];
     
     self.isZoom = NO;
+    self.isAudioMute = NO;
+    self.isVideoMute = NO;
+    
     [self.audioButton.layer setCornerRadius:20.0f];
     [self.videoButton.layer setCornerRadius:20.0f];
     [self.hangupButton.layer setCornerRadius:20.0f];
@@ -41,7 +44,7 @@
                                              selector:@selector(orientationChanged:)
                                                  name:UIDeviceOrientationDidChangeNotification
                                                object:nil];
-
+    
     
 }
 
@@ -134,11 +137,32 @@
 }
 
 - (IBAction)audioButtonPressed:(id)sender {
-    //TODO: Implement Audio Toggle
+    //TODO: this change not work on simulator (it will crash)
+    UIButton *audioButton = sender;
+    if (self.isAudioMute) {
+        [self.client unmuteAudioIn];
+        [audioButton setImage:[UIImage imageNamed:@"audioOn"] forState:UIControlStateNormal];
+        self.isAudioMute = NO;
+    } else {
+        [self.client muteAudioIn];
+        [audioButton setImage:[UIImage imageNamed:@"audioOff"] forState:UIControlStateNormal];
+        self.isAudioMute = YES;
+    }
 }
 
 - (IBAction)videoButtonPressed:(id)sender {
-    //TODO: Implement Video Toggle
+    UIButton *videoButton = sender;
+    if (self.isVideoMute) {
+//        [self.client unmuteVideoIn];
+        [self.client swapCameraToFront];
+        [videoButton setImage:[UIImage imageNamed:@"videoOn"] forState:UIControlStateNormal];
+        self.isVideoMute = NO;
+    } else {
+        [self.client swapCameraToBack];
+        //[self.client muteVideoIn];
+        //[videoButton setImage:[UIImage imageNamed:@"videoOff"] forState:UIControlStateNormal];
+        self.isVideoMute = YES;
+    }
 }
 
 - (IBAction)hangupButtonPressed:(id)sender {

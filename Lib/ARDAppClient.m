@@ -79,9 +79,7 @@ RTCPeerConnectionDelegate, RTCSessionDescriptionDelegate>
     UIDeviceOrientation currentOrientation;
     BOOL isForeGround;
     AVCaptureSession* sessionCurrent;
-
-    //Testing data
-    NSMutableArray * arrayCondidates;
+    AVCaptureDevicePosition cameraPosition;
 }
 @property(nonatomic, strong) ARDWebSocketChannel *channel;
 @property(nonatomic, strong) RTCPeerConnection *peerConnection;
@@ -95,9 +93,13 @@ RTCPeerConnectionDelegate, RTCSessionDescriptionDelegate>
 @property(nonatomic, strong) NSString *roomId;
 @property(nonatomic, strong) NSString *clientId;
 @property(nonatomic, assign) BOOL isInitiator;
+@property(nonatomic, assign) BOOL isSpeakerEnabled;
 @property(nonatomic, strong) NSMutableArray *iceServers;
 @property(nonatomic, strong) NSURL *webSocketURL;
 @property(nonatomic, strong) NSURL *webSocketRestURL;
+@property(nonatomic, strong) RTCAudioTrack *defaultAudioTrack;
+@property(nonatomic, strong) RTCVideoTrack *defaultVideoTrack;
+
 @end
 
 @implementation ARDAppClient
@@ -114,6 +116,7 @@ RTCPeerConnectionDelegate, RTCSessionDescriptionDelegate>
 @synthesize roomId = _roomId;
 @synthesize clientId = _clientId;
 @synthesize isInitiator = _isInitiator;
+@synthesize isSpeakerEnabled = _isSpeakerEnabled;
 @synthesize iceServers = _iceServers;
 @synthesize webSocketURL = _websocketURL;
 @synthesize webSocketRestURL = _websocketRestURL;
@@ -127,7 +130,9 @@ RTCPeerConnectionDelegate, RTCSessionDescriptionDelegate>
         _serverHostUrl = kARDRoomServerHostUrl;
         currentOrientation = [[UIDevice currentDevice] orientation];
         isForeGround = YES;
-        
+        _isSpeakerEnabled = YES;
+        cameraPosition = AVCaptureDevicePositionFront;
+
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(orientationChanged:) name:UIDeviceOrientationDidChangeNotification object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleCaptureSessionStopRunning:) name:AVCaptureSessionDidStopRunningNotification object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleStartCaptureSession:) name:AVCaptureSessionDidStartRunningNotification object:nil];
@@ -359,15 +364,17 @@ didReceiveMessage:(ARDSignalingMessage *)message {
 
 - (void)peerConnection:(RTCPeerConnection *)peerConnection
            addedStream:(RTCMediaStream *)stream {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        NSLog(@"Received %lu video tracks and %lu audio tracks",
-              (unsigned long)stream.videoTracks.count,
-              (unsigned long)stream.audioTracks.count);
-        if (stream.videoTracks.count) {
-            RTCVideoTrack *videoTrack = stream.videoTracks[0];
-            [_delegate appClient:self didReceiveRemoteVideoTrack:videoTrack];
-        }
-    });
+  dispatch_async(dispatch_get_main_queue(), ^{
+    NSLog(@"Received %lu video tracks and %lu audio tracks",
+        (unsigned long)stream.videoTracks.count,
+        (unsigned long)stream.audioTracks.count);
+    if (stream.videoTracks.count) {
+      RTCVideoTrack *videoTrack = stream.videoTracks[0];
+      [_delegate appClient:self didReceiveRemoteVideoTrack:videoTrack];
+      if (_isSpeakerEnabled) [self enableSpeaker]; //Use the "handsfree" speaker instead of the ear speaker.
+
+    }
+  });
 }
 
 - (void)peerConnection:(RTCPeerConnection *)peerConnection
@@ -398,26 +405,15 @@ didReceiveMessage:(ARDSignalingMessage *)message {
 - (void)peerConnection:(RTCPeerConnection *)peerConnection
    iceGatheringChanged:(RTCICEGatheringState)newState {
     NSLog(@"ICE gathering state changed: %d", newState);
-    switch (newState) {
-        case RTCICEGatheringComplete:
-            for (ARDICECandidateMessage *message in arrayCondidates) {
-                [self sendSignalingMessage:message];
-            }
-            break;
-    }
 }
 
 
 - (void)peerConnection:(RTCPeerConnection *)peerConnection
        gotICECandidate:(RTCICECandidate *)candidate {
     dispatch_async(dispatch_get_main_queue(), ^{
-        if (!arrayCondidates) {
-            arrayCondidates = [NSMutableArray array];
-        }
         ARDICECandidateMessage *message =
         [[ARDICECandidateMessage alloc] initWithCandidate:candidate];
-        [arrayCondidates addObject:message];
-//        [self sendSignalingMessage:message];
+        [self sendSignalingMessage:message];
     });
 }
 
@@ -560,7 +556,7 @@ didSetSessionDescriptionWithError:(NSError *)error {
 }
 
 
-- (RTCVideoTrack *)createLocalVideoTrack {
+- (RTCVideoTrack *)createLocalVideoTrack:(AVCaptureDevicePosition)mediaType {
     // The iOS simulator doesn't provide any sort of camera capture
     // support or emulation (http://goo.gl/rHAnC1) so don't bother
     // trying to open a local stream.
@@ -573,7 +569,7 @@ didSetSessionDescriptionWithError:(NSError *)error {
     NSString *cameraID = nil;
     for (AVCaptureDevice *captureDevice in
          [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo]) {
-        if (captureDevice.position == AVCaptureDevicePositionFront) {
+        if (captureDevice.position == mediaType) {
             cameraID = [captureDevice localizedName];
             break;
         }
@@ -591,13 +587,14 @@ didSetSessionDescriptionWithError:(NSError *)error {
 - (RTCMediaStream *)createLocalMediaStream {
     RTCMediaStream* localStream = [_factory mediaStreamWithLabel:@"ARDAMS"];
     
-    RTCVideoTrack *localVideoTrack = [self createLocalVideoTrack];
+    RTCVideoTrack *localVideoTrack = [self createLocalVideoTrack:cameraPosition];
     if (localVideoTrack) {
         [localStream addVideoTrack:localVideoTrack];
         [_delegate appClient:self didReceiveLocalVideoTrack:localVideoTrack];
     }
     
     [localStream addAudioTrack:[_factory audioTrackWithID:@"ARDAMSa0"]];
+    if (_isSpeakerEnabled) [self enableSpeaker];
     return localStream;
 }
 
@@ -794,6 +791,68 @@ didSetSessionDescriptionWithError:(NSError *)error {
     return [[RTCICEServer alloc] initWithURI:defaultSTUNServerURL
                                     username:@""
                                     password:@""];
+}
+
+#pragma mark - Audio mute/unmute
+- (void)muteAudioIn {
+    NSLog(@"audio muted");
+    RTCMediaStream *localStream = _peerConnection.localStreams[0];
+    self.defaultAudioTrack = localStream.audioTracks[0];
+    [localStream removeAudioTrack:localStream.audioTracks[0]];
+    [_peerConnection removeStream:localStream];
+    [_peerConnection addStream:localStream];
+}
+- (void)unmuteAudioIn {
+    NSLog(@"audio unmuted");
+    RTCMediaStream* localStream = _peerConnection.localStreams[0];
+    [localStream addAudioTrack:self.defaultAudioTrack];
+    [_peerConnection removeStream:localStream];
+    [_peerConnection addStream:localStream];
+    if (_isSpeakerEnabled) [self enableSpeaker];
+}
+
+#pragma mark - Video mute/unmute
+- (void)muteVideoIn {
+    NSLog(@"video muted");
+    RTCMediaStream *localStream = _peerConnection.localStreams[0];
+    self.defaultVideoTrack = localStream.videoTracks[0];
+    [localStream removeVideoTrack:localStream.videoTracks[0]];
+    [_peerConnection removeStream:localStream];
+    [_peerConnection addStream:localStream];
+}
+- (void)unmuteVideoIn {
+    NSLog(@"video unmuted");
+    RTCMediaStream* localStream = _peerConnection.localStreams[0];
+    [localStream addVideoTrack:self.defaultVideoTrack];
+    [_peerConnection removeStream:localStream];
+    [_peerConnection addStream:localStream];
+}
+
+#pragma mark - swap camera
+
+- (void)swapCameraToFront{
+    [self swapCamera:AVCaptureDevicePositionFront];
+}
+
+- (void)swapCameraToBack {
+    [self swapCamera:AVCaptureDevicePositionBack];
+}
+
+ - (void)swapCamera:(AVCaptureDevicePosition)camera {
+     cameraPosition = camera;
+     [self cleanUpAllMediaStreams];
+ }
+
+#pragma mark - enable/disable speaker
+
+- (void)enableSpeaker {
+    [[AVAudioSession sharedInstance] overrideOutputAudioPort:AVAudioSessionPortOverrideSpeaker error:nil];
+    _isSpeakerEnabled = YES;
+}
+
+- (void)disableSpeaker {
+    [[AVAudioSession sharedInstance] overrideOutputAudioPort:AVAudioSessionPortOverrideNone error:nil];
+    _isSpeakerEnabled = NO;
 }
 
 @end

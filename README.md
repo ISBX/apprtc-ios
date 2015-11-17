@@ -143,5 +143,4 @@ If you'd like to contribute, please fork the repository and issue pull requests.
 
 ## Known Issues
 The following are known issues that are being worked and should be released shortly:
-* Audio Mute needs to be implemented
-* Video Mute needs to be implemented
+* None at this time

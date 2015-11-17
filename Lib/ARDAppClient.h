@@ -26,7 +26,6 @@
  */
 
 #import <Foundation/Foundation.h>
-
 #import "RTCVideoTrack.h"
 
 typedef NS_ENUM(NSInteger, ARDAppClientState) {
@@ -39,6 +38,8 @@ typedef NS_ENUM(NSInteger, ARDAppClientState) {
 };
 
 @class ARDAppClient;
+@class AVCaptureDevice;
+
 @protocol ARDAppClientDelegate <NSObject>
 
 - (void)appClient:(ARDAppClient *)client
@@ -70,6 +71,22 @@ didReceiveRemoteVideoTrack:(RTCVideoTrack *)remoteVideoTrack;
 // and so on.
 - (void)connectToRoomWithId:(NSString *)roomId
                     options:(NSDictionary *)options;
+
+// Mute and unmute Audio-In
+- (void)muteAudioIn;
+- (void)unmuteAudioIn;
+
+// Mute and unmute Video-In
+- (void)muteVideoIn;
+- (void)unmuteVideoIn;
+
+// Enabling / Disabling Speakerphone
+- (void)enableSpeaker;
+- (void)disableSpeaker;
+
+// Swap camera functionality
+- (void)swapCameraToFront;
+- (void)swapCameraToBack;
 
 // Disconnects from the AppRTC servers and any connected clients.
 - (void)disconnect;
