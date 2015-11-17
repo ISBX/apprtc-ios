@@ -5,24 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3ef0b5b8-e0de-49e2-a512-4c0338d0ea88" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/runConfigurations/AppRTC.xml" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Pods/libjingle_peerconnection/libjingle_peerconnection/libWebRTC.a" afterPath="$PROJECT_DIR$/Pods/libjingle_peerconnection/libjingle_peerconnection/libWebRTC.a" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/AppRTC/ARTCVideoChatViewController.h" afterPath="$PROJECT_DIR$/AppRTC/ARTCVideoChatViewController.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/AppRTC/ARTCVideoChatViewController.m" afterPath="$PROJECT_DIR$/AppRTC/ARTCVideoChatViewController.m" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Lib/ARDAppClient.h" afterPath="$PROJECT_DIR$/Lib/ARDAppClient.h" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Lib/ARDAppClient.m" afterPath="$PROJECT_DIR$/Lib/ARDAppClient.m" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Podfile.lock" afterPath="$PROJECT_DIR$/Podfile.lock" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Pods/Local Podspecs/AppRTC.podspec.json" afterPath="$PROJECT_DIR$/Pods/Local Podspecs/AppRTC.podspec.json" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Pods/Manifest.lock" afterPath="$PROJECT_DIR$/Pods/Manifest.lock" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Pods/Pods.xcodeproj/xcshareddata/xcschemes/AppRTC.xcscheme" afterPath="$PROJECT_DIR$/Pods/Pods.xcodeproj/xcshareddata/xcschemes/AppRTC.xcscheme" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Pods/SocketRocket/README.rst" afterPath="$PROJECT_DIR$/Pods/SocketRocket/README.rst" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Pods/SocketRocket/SocketRocket/SRWebSocket.h" afterPath="$PROJECT_DIR$/Pods/SocketRocket/SocketRocket/SRWebSocket.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Pods/SocketRocket/SocketRocket/SRWebSocket.m" afterPath="$PROJECT_DIR$/Pods/SocketRocket/SocketRocket/SRWebSocket.m" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Pods/libjingle_peerconnection/libjingle_peerconnection/Headers/RTCLogging.h" afterPath="$PROJECT_DIR$/Pods/libjingle_peerconnection/libjingle_peerconnection/Headers/RTCLogging.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Pods/libjingle_peerconnection/libjingle_peerconnection/Headers/RTCPeerConnection.h" afterPath="$PROJECT_DIR$/Pods/libjingle_peerconnection/libjingle_peerconnection/Headers/RTCPeerConnection.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Pods/libjingle_peerconnection/libjingle_peerconnection/Headers/RTCPeerConnectionInterface.h" afterPath="$PROJECT_DIR$/Pods/libjingle_peerconnection/libjingle_peerconnection/Headers/RTCPeerConnectionInterface.h" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/README.md" afterPath="$PROJECT_DIR$/README.md" />
     </list>
     <ignored path="apprtc-ios.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -126,8 +109,8 @@
       <file leaf-file-name="ARDAppClient.m" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Lib/ARDAppClient.m">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-0.51011235">
-              <caret line="145" column="0" selection-start-line="145" selection-start-column="0" selection-end-line="145" selection-end-column="0" />
+            <state vertical-scroll-proportion="1.0347625">
+              <caret line="510" column="32" selection-start-line="510" selection-start-column="8" selection-end-line="510" selection-end-column="32" />
               <folding>
                 <element signature="e#1461#1485#0" expanded="true" />
                 <element signature="e#4269#4302#0" expanded="true" />
@@ -140,7 +123,7 @@
         <entry file="file://$PROJECT_DIR$/Lib/ARDAppClient.h">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="28" column="25" selection-start-line="28" selection-start-column="25" selection-end-line="28" selection-end-column="25" />
+              <caret line="83" column="8" selection-start-line="83" selection-start-column="8" selection-end-line="83" selection-end-column="8" />
               <folding>
                 <element signature="e#1461#1494#0" expanded="true" />
               </folding>
@@ -348,11 +331,11 @@
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.19062665" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32897604" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.0" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32897604" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.027233116" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32897604" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4379085" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.1864139" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
@@ -375,13 +358,8 @@
       <breakpoints>
         <line-breakpoint type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/Lib/ARDAppClient.m</url>
-          <line>458</line>
+          <line>457</line>
           <option name="timeStamp" value="11" />
-        </line-breakpoint>
-        <line-breakpoint log-message="true" suspend="NONE" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/Lib/ARDAppClient.m</url>
-          <line>515</line>
-          <option name="timeStamp" value="20" />
         </line-breakpoint>
       </breakpoints>
       <option name="time" value="29" />
@@ -479,6 +457,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.33333334">
           <caret line="117" column="8" selection-start-line="117" selection-start-column="8" selection-end-line="117" selection-end-column="8" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -557,7 +536,7 @@
     <entry file="file://$PROJECT_DIR$/Lib/ARDAppClient.h">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="28" column="25" selection-start-line="28" selection-start-column="25" selection-end-line="28" selection-end-column="25" />
+          <caret line="83" column="8" selection-start-line="83" selection-start-column="8" selection-end-line="83" selection-end-column="8" />
           <folding>
             <element signature="e#1461#1494#0" expanded="true" />
           </folding>
@@ -566,8 +545,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Lib/ARDAppClient.m">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-0.51011235">
-          <caret line="145" column="0" selection-start-line="145" selection-start-column="0" selection-end-line="145" selection-end-column="0" />
+        <state vertical-scroll-proportion="1.0347625">
+          <caret line="510" column="32" selection-start-line="510" selection-start-column="8" selection-end-line="510" selection-end-column="32" />
           <folding>
             <element signature="e#1461#1485#0" expanded="true" />
             <element signature="e#4269#4302#0" expanded="true" />

@@ -199,7 +199,6 @@ RTCPeerConnectionDelegate, RTCSessionDescriptionDelegate>
     [self cleanUpAllMediaStreams];
 }
 
-
 - (void)restoreAllMediaStreams {
     if (self.peerConnection && _peerConnection.localStreams.count == 0){
         RTCMediaStream* localStream = [self createLocalMediaStream];
