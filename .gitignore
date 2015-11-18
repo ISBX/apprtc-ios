@@ -35,4 +35,4 @@ xcuserdata
 .DS_Store
 #*.lock
 
-.idea/workspace.xml
+.idea/
