@@ -80,6 +80,7 @@ RTCPeerConnectionDelegate, RTCSessionDescriptionDelegate>
     BOOL isForeGround;
     AVCaptureSession* sessionCurrent;
     AVCaptureDevicePosition cameraPosition;
+    BOOL   isMuteVideoIn;
 }
 @property(nonatomic, strong) ARDWebSocketChannel *channel;
 @property(nonatomic, strong) RTCPeerConnection *peerConnection;
@@ -131,6 +132,7 @@ RTCPeerConnectionDelegate, RTCSessionDescriptionDelegate>
         currentOrientation = [[UIDevice currentDevice] orientation];
         isForeGround = YES;
         _isSpeakerEnabled = YES;
+        isMuteVideoIn = NO;
         cameraPosition = AVCaptureDevicePositionFront;
 
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(orientationChanged:) name:UIDeviceOrientationDidChangeNotification object:nil];
@@ -200,7 +202,7 @@ RTCPeerConnectionDelegate, RTCSessionDescriptionDelegate>
 }
 
 - (void)restoreAllMediaStreams {
-    if (self.peerConnection && _peerConnection.localStreams.count == 0){
+    if (self.peerConnection && _peerConnection.localStreams.count == 0 && !isMuteVideoIn) {
         RTCMediaStream* localStream = [self createLocalMediaStream];
         [self.peerConnection addStream:localStream];
     }
@@ -813,14 +815,19 @@ didSetSessionDescriptionWithError:(NSError *)error {
 #pragma mark - Video mute/unmute
 - (void)muteVideoIn {
     NSLog(@"video muted");
+    isMuteVideoIn = YES;
     RTCMediaStream *localStream = _peerConnection.localStreams[0];
     self.defaultVideoTrack = localStream.videoTracks[0];
     [localStream removeVideoTrack:localStream.videoTracks[0]];
     [_peerConnection removeStream:localStream];
     [_peerConnection addStream:localStream];
+    if (sessionCurrent) {
+        [sessionCurrent stopRunning];
+    }
 }
 - (void)unmuteVideoIn {
     NSLog(@"video unmuted");
+    isMuteVideoIn = NO;
     RTCMediaStream* localStream = _peerConnection.localStreams[0];
     [localStream addVideoTrack:self.defaultVideoTrack];
     [_peerConnection removeStream:localStream];
