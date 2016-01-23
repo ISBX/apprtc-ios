@@ -203,10 +203,20 @@
     [self.remoteVideoTrack addRenderer:self.remoteView];
     
     [UIView animateWithDuration:0.4f animations:^{
+        //Instead of using 0.4 of screen size, we re-calculate the local view and keep our aspect ratio
+        UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
+        CGRect videoRect = CGRectMake(0.0f, 0.0f, self.view.frame.size.width/4.0f, self.view.frame.size.height/4.0f);
+        if (orientation == UIDeviceOrientationLandscapeLeft || orientation == UIDeviceOrientationLandscapeRight) {
+            videoRect = CGRectMake(0.0f, 0.0f, self.view.frame.size.height/4.0f, self.view.frame.size.width/4.0f);
+        }
+        CGRect videoFrame = AVMakeRectWithAspectRatioInsideRect(_localView.frame.size, videoRect);
+        
+        [self.localViewWidthConstraint setConstant:videoFrame.size.width];
+        [self.localViewHeightConstraint setConstant:videoFrame.size.height];
+        
+        
         [self.localViewBottomConstraint setConstant:28.0f];
         [self.localViewRightConstraint setConstant:28.0f];
-        [self.localViewHeightConstraint setConstant:self.view.frame.size.height/4.0f];
-        [self.localViewWidthConstraint setConstant:self.view.frame.size.width/4.0f];
         [self.footerViewBottomConstraint setConstant:-80.0f];
         [self.view layoutIfNeeded];
     }];
