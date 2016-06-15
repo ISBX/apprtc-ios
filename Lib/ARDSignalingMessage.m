@@ -147,15 +147,12 @@ static NSString const *kARDSignalingMessageTypeKey = @"type";
 
 @implementation ARDCustomMessage
 
-- (instancetype)init {
-    return [super initWithType:kARDSignalingMessageTypeCustomMessage];
-}
-
 - (instancetype)initWithTagAndData:(NSString *)tag
                               data:(NSDictionary *)data
 {
     self.tag = tag;
     self.data = data;
+    return [super initWithType:kARDSignalingMessageTypeCustomMessage];
 }
 
 - (NSData *)JSONData {
