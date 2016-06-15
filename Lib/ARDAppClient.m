@@ -166,7 +166,7 @@ RTCPeerConnectionDelegate, RTCSessionDescriptionDelegate>
 }
 
 - (void)sendData:(NSString *)tag
-            data:(NSDictionary *)data {    
+            data:(NSDictionary<NSString *, NSObject *> *)data {
     ARDCustomMessage *customMessage = [[ARDCustomMessage alloc] initWithTagAndData:tag data:data];
     NSData *customData = [customMessage JSONData];
     [_channel sendData:customData];
