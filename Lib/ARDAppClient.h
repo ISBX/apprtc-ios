@@ -29,26 +29,32 @@
 
 #import "RTCVideoTrack.h"
 
+@interface RTCMessageReceiver : NSObject
+
+- (void)didReceiveMessage:(NSString *)message;
+
+@end
+
 typedef NS_ENUM(NSInteger, ARDAppClientState) {
-  // Disconnected from servers.
-  kARDAppClientStateDisconnected,
-  // Connecting to servers.
-  kARDAppClientStateConnecting,
-  // Connected to servers.
-  kARDAppClientStateConnected,
+    // Disconnected from servers.
+    kARDAppClientStateDisconnected,
+    // Connecting to servers.
+    kARDAppClientStateConnecting,
+    // Connected to servers.
+    kARDAppClientStateConnected,
 };
 
 @class ARDAppClient;
 @protocol ARDAppClientDelegate <NSObject>
 
 - (void)appClient:(ARDAppClient *)client
-    didChangeState:(ARDAppClientState)state;
+   didChangeState:(ARDAppClientState)state;
 
 - (void)appClient:(ARDAppClient *)client
-    didReceiveLocalVideoTrack:(RTCVideoTrack *)localVideoTrack;
+didReceiveLocalVideoTrack:(RTCVideoTrack *)localVideoTrack;
 
 - (void)appClient:(ARDAppClient *)client
-    didReceiveRemoteVideoTrack:(RTCVideoTrack *)remoteVideoTrack;
+didReceiveRemoteVideoTrack:(RTCVideoTrack *)remoteVideoTrack;
 
 - (void)appClient:(ARDAppClient *)client
          didError:(NSError *)error;
@@ -69,7 +75,11 @@ typedef NS_ENUM(NSInteger, ARDAppClientState) {
 // for call configurations such as overriding server choice, specifying codecs
 // and so on.
 - (void)connectToRoomWithId:(NSString *)roomId
-                    options:(NSDictionary *)options;
+                    options:(NSDictionary *)options
+            messageReceiver:(RTCMessageReceiver *)messageReceiver;
+
+- (void)sendData:(NSString *)tag
+            data:(NSDictionary *)data;
 
 // Mute and unmute Audio-In
 - (void)muteAudioIn;

@@ -94,6 +94,8 @@ static NSInteger kARDAppClientErrorInvalidRoom = -7;
 @property(nonatomic, strong) RTCAudioTrack *defaultAudioTrack;
 @property(nonatomic, strong) RTCVideoTrack *defaultVideoTrack;
 
+@property(nonatomic, strong) RTCMessageReceiver *messageReceiver;
+
 @end
 
 @implementation ARDAppClient
@@ -163,12 +165,30 @@ static NSInteger kARDAppClientErrorInvalidRoom = -7;
   [_delegate appClient:self didChangeState:_state];
 }
 
+- (void)sendData:(NSString *)tag
+            data:(NSDictionary *)data {
+    NSError * err;
+    NSDictionary * json = @{
+                            @"type": @"custom",
+                            @"tag": tag,
+                            @"data" : [[NSString alloc] initWithData:[NSJSONSerialization dataWithJSONObject:data options:0 error:&err] encoding:NSUTF8StringEncoding]
+                            };
+    
+    NSString * finalJsonData = [[NSString alloc] initWithData:[NSJSONSerialization dataWithJSONObject:json options:0 error:&err] encoding:NSUTF8StringEncoding];
+    
+    ARDSignalingMessage *message = [ARDSignalingMessage messageFromJSONString:(finalJsonData)];
+    [self sendSignalingMessageToCollider:message];
+}
+
 - (void)connectToRoomWithId:(NSString *)roomId
-                    options:(NSDictionary *)options {
+                    options:(NSDictionary *)options
+            messageReceiver:(RTCMessageReceiver *)messageReceiver {
   NSParameterAssert(roomId.length);
   NSParameterAssert(_state == kARDAppClientStateDisconnected);
   self.state = kARDAppClientStateConnecting;
 
+    self.messageReceiver = messageReceiver;
+    
   // Request TURN.
   __weak ARDAppClient *weakSelf = self;
   NSURL *turnRequestURL = [NSURL URLWithString:kARDTurnRequestUrl];
@@ -249,6 +269,12 @@ static NSInteger kARDAppClientErrorInvalidRoom = -7;
 - (void)channel:(ARDWebSocketChannel *)channel
     didReceiveMessage:(ARDSignalingMessage *)message {
   switch (message.type) {
+      case kARDSignalingMessageTypeCustomMessage:
+          if (_messageReceiver != nil) {
+              [_messageReceiver didReceiveMessage:([[NSString alloc] initWithData:message.JSONData encoding:NSUTF8StringEncoding])];
+          }
+          break;
+          
     case kARDSignalingMessageTypeOffer:
     case kARDSignalingMessageTypeAnswer:
       _hasReceivedSdp = YES;
@@ -803,5 +829,9 @@ static NSInteger kARDAppClientErrorInvalidRoom = -7;
     [[AVAudioSession sharedInstance] overrideOutputAudioPort:AVAudioSessionPortOverrideNone error:nil];
     _isSpeakerEnabled = NO;
 }
+
+@end
+
+@implementation RTCMessageReceiver
 
 @end
