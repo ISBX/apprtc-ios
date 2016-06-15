@@ -263,10 +263,7 @@ didReceiveMessage:(ARDSignalingMessage *)message {
     switch (message.type) {
         case kARDSignalingMessageTypeCustomMessage:
         {
-            NSLog(@"INCOMING CUSTOM MSG:");
-            NSLog(message);
-            NSError * err;
-            NSDictionary * json = (NSDictionary *)[NSJSONSerialization JSONObjectWithData:message.JSONData options:NSJSONReadingMutableContainers error:&err];
+            NSDictionary * json = (NSDictionary *)[NSJSONSerialization JSONObjectWithData:message.JSONData options:NULL error:NULL];
             
             [_messageReceiver didReceiveMessage:json[@"tag"] data:json[@"data"]];
         }
