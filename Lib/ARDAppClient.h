@@ -31,7 +31,8 @@
 
 @interface RTCMessageReceiver : NSObject
 
-- (void)didReceiveMessage:(NSString *)message;
+- (void)didReceiveMessage:(NSString *)tag
+                     data:(NSDictionary *)data;
 
 @end
 

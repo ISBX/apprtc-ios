@@ -270,8 +270,14 @@ static NSInteger kARDAppClientErrorInvalidRoom = -7;
     didReceiveMessage:(ARDSignalingMessage *)message {
   switch (message.type) {
       case kARDSignalingMessageTypeCustomMessage:
-          if (_messageReceiver != nil) {
-              [_messageReceiver didReceiveMessage:([[NSString alloc] initWithData:message.JSONData encoding:NSUTF8StringEncoding])];
+          NSLog(@"INCOMING CUSTOM MSG:");
+          NSLog(message);
+          
+          if (_messageReceiver) {
+              NSError * err;
+              NSDictionary * json = (NSDictionary *)[NSJSONSerialization JSONObjectWithData:message.JSONData options:NSJSONReadingMutableContainers error:&err];
+              
+              [_messageReceiver didReceiveMessage:json[@"tag"] data:json[@"data"]];
           }
           break;
           
