@@ -269,18 +269,16 @@ static NSInteger kARDAppClientErrorInvalidRoom = -7;
 - (void)channel:(ARDWebSocketChannel *)channel
     didReceiveMessage:(ARDSignalingMessage *)message {
   switch (message.type) {
-      case kARDSignalingMessageTypeCustomMessage:
+            case kARDSignalingMessageTypeCustomMessage:
+    {
           NSLog(@"INCOMING CUSTOM MSG:");
           NSLog(message);
-          
-          if (_messageReceiver) {
               NSError * err;
               NSDictionary * json = (NSDictionary *)[NSJSONSerialization JSONObjectWithData:message.JSONData options:NSJSONReadingMutableContainers error:&err];
               
               [_messageReceiver didReceiveMessage:json[@"tag"] data:json[@"data"]];
-          }
-          break;
-          
+    }
+    break;
     case kARDSignalingMessageTypeOffer:
     case kARDSignalingMessageTypeAnswer:
       _hasReceivedSdp = YES;
