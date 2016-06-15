@@ -177,7 +177,7 @@ static NSInteger kARDAppClientErrorInvalidRoom = -7;
     NSString * finalJsonData = [[NSString alloc] initWithData:[NSJSONSerialization dataWithJSONObject:json options:0 error:&err] encoding:NSUTF8StringEncoding];
     
     ARDSignalingMessage *message = [ARDSignalingMessage messageFromJSONString:(finalJsonData)];
-    [self sendSignalingMessageToCollider:message];
+    [self sendSignalingMessage:message];
 }
 
 - (void)connectToRoomWithId:(NSString *)roomId
