@@ -63,9 +63,13 @@
     [self disconnect];
     self.client = [[ARDAppClient alloc] initWithDelegate:self];
     [self.client setServerHostUrl:SERVER_HOST_URL];
-    [self.client connectToRoomWithId:self.roomName options:nil];
+    [self.client connectToRoomWithId:self.roomName options:nil messageReceiver:self];
     
     [self.urlLabel setText:self.roomUrl];
+}
+
+- (void)didReceiveMessage:(NSString *)tag data:(NSDictionary<NSString *,NSObject *> *)data {
+    NSLog([NSString stringWithFormat:@"INCOMING MESSGAE WITH tag: %@/ AND data: %@/", tag, data]);
 }
 
 - (void)viewWillDisappear:(BOOL)animated {

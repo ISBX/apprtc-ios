@@ -94,7 +94,7 @@ RTCPeerConnectionDelegate, RTCSessionDescriptionDelegate>
 @property(nonatomic, strong) RTCAudioTrack *defaultAudioTrack;
 @property(nonatomic, strong) RTCVideoTrack *defaultVideoTrack;
 
-@property(nonatomic, strong) RTCMessageReceiver *messageReceiver;
+@property(nonatomic, weak) id<RTCMessageReceiver> messageReceiver;
 
 @end
 
@@ -174,7 +174,7 @@ RTCPeerConnectionDelegate, RTCSessionDescriptionDelegate>
 
 - (void)connectToRoomWithId:(NSString *)roomId
                     options:(NSDictionary *)options
-            messageReceiver:(RTCMessageReceiver *)messageReceiver {
+            messageReceiver:(id<RTCMessageReceiver>)messageReceiver {
     NSParameterAssert(roomId.length);
     NSParameterAssert(_state == kARDAppClientStateDisconnected);
     self.state = kARDAppClientStateConnecting;

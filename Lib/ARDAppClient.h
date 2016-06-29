@@ -29,7 +29,7 @@
 
 #import "RTCVideoTrack.h"
 
-@interface RTCMessageReceiver : NSObject
+@protocol RTCMessageReceiver <NSObject>
 
 - (void)didReceiveMessage:(NSString *)tag
                      data:(NSDictionary<NSString *, NSObject *> *)data;
@@ -77,7 +77,7 @@ didReceiveRemoteVideoTrack:(RTCVideoTrack *)remoteVideoTrack;
 // and so on.
 - (void)connectToRoomWithId:(NSString *)roomId
                     options:(NSDictionary *)options
-            messageReceiver:(RTCMessageReceiver *)messageReceiver;
+            messageReceiver:(id<RTCMessageReceiver>)messageReceiver;
 
 - (void)sendData:(NSString *)tag
             data:(NSDictionary *)data;
