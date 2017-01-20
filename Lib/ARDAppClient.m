@@ -132,6 +132,26 @@ static NSInteger kARDAppClientErrorInvalidRoom = -7;
   return self;
 }
 
+- (instancetype)initWithDelegate:(id<ARDAppClientDelegate>)delegate andUrl:(NSString *)url{
+    
+    if (self = [super init]) {
+        _delegate = delegate;
+        _factory = [[RTCPeerConnectionFactory alloc] init];
+        _messageQueue = [NSMutableArray array];
+        _iceServers = [NSMutableArray arrayWithObject:[self defaultSTUNServer]];
+        kARDRoomServerHostUrl = url;
+        _serverHostUrl = kARDRoomServerHostUrl;
+        _isSpeakerEnabled = YES;
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(orientationChanged:)
+                                                     name:@"UIDeviceOrientationDidChangeNotification"
+                                                   object:nil];
+    }
+    return self;
+    
+}
+
 - (void)dealloc {
   [[NSNotificationCenter defaultCenter] removeObserver:self name:@"UIDeviceOrientationDidChangeNotification" object:nil];
   [self disconnect];

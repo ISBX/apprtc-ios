@@ -63,6 +63,7 @@ typedef NS_ENUM(NSInteger, ARDAppClientState) {
 @property(nonatomic, strong) NSString *serverHostUrl;
 
 - (instancetype)initWithDelegate:(id<ARDAppClientDelegate>)delegate;
+- (instancetype)initWithDelegate:(id<ARDAppClientDelegate>)delegate andUrl:(NSString *)url;
 
 // Establishes a connection with the AppRTC servers for the given room id.
 // TODO(tkchin): provide available keys/values for options. This will be used
