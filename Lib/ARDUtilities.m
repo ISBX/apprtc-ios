@@ -30,25 +30,41 @@
 @implementation NSDictionary (ARDUtilites)
 
 + (NSDictionary *)dictionaryWithJSONString:(NSString *)jsonString {
-  NSParameterAssert(jsonString.length > 0);
-  NSData *data = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
-  NSError *error = nil;
-  NSDictionary *dict =
-      [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
-  if (error) {
-    NSLog(@"Error parsing JSON: %@", error.localizedDescription);
-  }
-  return dict;
+    NSParameterAssert(jsonString);
+    
+    NSData *data = nil;
+    
+    if([jsonString isKindOfClass:[NSString class]]){
+        NSString *string = jsonString;
+        data = [string dataUsingEncoding:NSUTF8StringEncoding];
+    }else if([jsonString isKindOfClass:[NSDictionary class]]){
+        NSError *errorJsonSerialization = nil;
+        NSDictionary *dict = jsonString;
+        data = [NSJSONSerialization dataWithJSONObject:dict
+                                               options:NSJSONReadingAllowFragments
+                                                 error:&errorJsonSerialization];
+        NSLog(@"Error JSON Serialization: %@", errorJsonSerialization.localizedDescription);
+    }else{
+        return nil;
+    }
+    
+    NSError *error = nil;
+    NSDictionary *dict =
+    [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
+    if (error) {
+        NSLog(@"Error parsing JSON: %@", error.localizedDescription);
+    }
+    return dict;
 }
 
 + (NSDictionary *)dictionaryWithJSONData:(NSData *)jsonData {
-  NSError *error = nil;
-  NSDictionary *dict =
-      [NSJSONSerialization JSONObjectWithData:jsonData options:0 error:&error];
-  if (error) {
-    NSLog(@"Error parsing JSON: %@", error.localizedDescription);
-  }
-  return dict;
+    NSError *error = nil;
+    NSDictionary *dict =
+    [NSJSONSerialization JSONObjectWithData:jsonData options:0 error:&error];
+    if (error) {
+        NSLog(@"Error parsing JSON: %@", error.localizedDescription);
+    }
+    return dict;
 }
 
 @end
@@ -59,16 +75,16 @@
        completionHandler:(void (^)(NSURLResponse *response,
                                    NSData *data,
                                    NSError *error))completionHandler {
-  // Kick off an async request which will call back on main thread.
-  [NSURLConnection sendAsynchronousRequest:request
-                                     queue:[NSOperationQueue mainQueue]
-                         completionHandler:^(NSURLResponse *response,
-                                             NSData *data,
-                                             NSError *error) {
-    if (completionHandler) {
-      completionHandler(response, data, error);
-    }
-  }];
+    // Kick off an async request which will call back on main thread.
+    [NSURLConnection sendAsynchronousRequest:request
+                                       queue:[NSOperationQueue mainQueue]
+                           completionHandler:^(NSURLResponse *response,
+                                               NSData *data,
+                                               NSError *error) {
+                               if (completionHandler) {
+                                   completionHandler(response, data, error);
+                               }
+                           }];
 }
 
 // Posts data to the specified URL.
@@ -77,35 +93,38 @@
          completionHandler:(void (^)(BOOL succeeded,
                                      NSData *data))completionHandler {
     NSLog(@"url = %@", url);
-  NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
-  request.HTTPMethod = @"POST";
-  request.HTTPBody = data;
-  [[self class] sendAsyncRequest:request
-                completionHandler:^(NSURLResponse *response,
-                                    NSData *data,
-                                    NSError *error) {
-    if (error) {
-      NSLog(@"Error posting data: %@", error.localizedDescription);
-      if (completionHandler) {
-        completionHandler(NO, data);
-      }
-      return;
-    }
-    NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
-    if (httpResponse.statusCode != 200) {
-      NSString *serverResponse = data.length > 0 ?
-          [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] :
-          nil;
-      NSLog(@"Received bad response: %@", serverResponse);
-      if (completionHandler) {
-        completionHandler(NO, data);
-      }
-      return;
-    }
-    if (completionHandler) {
-      completionHandler(YES, data);
-    }
-  }];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+    request.HTTPMethod = @"POST";
+    request.HTTPBody = data;
+    
+    [request setValue:@"application/json; charset=utf-8" forHTTPHeaderField:@"Content-Type"];
+    
+    [[self class] sendAsyncRequest:request
+                 completionHandler:^(NSURLResponse *response,
+                                     NSData *data,
+                                     NSError *error) {
+                     if (error) {
+                         NSLog(@"Error posting data: %@", error.localizedDescription);
+                         if (completionHandler) {
+                             completionHandler(NO, data);
+                         }
+                         return;
+                     }
+                     NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
+                     if (httpResponse.statusCode != 200) {
+                         NSString *serverResponse = data.length > 0 ?
+                         [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] :
+                         nil;
+                         NSLog(@"Received bad response: %@", serverResponse);
+                         if (completionHandler) {
+                             completionHandler(NO, data);
+                         }
+                         return;
+                     }
+                     if (completionHandler) {
+                         completionHandler(YES, data);
+                     }
+                 }];
 }
 
 @end
