@@ -31,10 +31,11 @@
 #import "RTCSessionDescription.h"
 
 typedef enum {
-  kARDSignalingMessageTypeCandidate,
-  kARDSignalingMessageTypeOffer,
-  kARDSignalingMessageTypeAnswer,
-  kARDSignalingMessageTypeBye,
+    kARDSignalingMessageTypeCustomMessage,
+    kARDSignalingMessageTypeCandidate,
+    kARDSignalingMessageTypeOffer,
+    kARDSignalingMessageTypeAnswer,
+    kARDSignalingMessageTypeBye,
 } ARDSignalingMessageType;
 
 @interface ARDSignalingMessage : NSObject
@@ -63,4 +64,14 @@ typedef enum {
 @end
 
 @interface ARDByeMessage : ARDSignalingMessage
+@end
+
+@interface ARDCustomMessage : ARDSignalingMessage
+
+- (instancetype)initWithTagAndData:(NSString *)tag
+                               data:(NSDictionary *)data;
+
+@property(nonatomic, strong) NSString *tag;
+@property(nonatomic, strong) NSDictionary *data;
+
 @end

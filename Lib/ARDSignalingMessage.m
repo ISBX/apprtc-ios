@@ -70,7 +70,10 @@ static NSString const *kARDSignalingMessageTypeKey = @"type";
         [[ARDSessionDescriptionMessage alloc] initWithDescription:description];
   } else if ([typeString isEqualToString:@"bye"]) {
     message = [[ARDByeMessage alloc] init];
-  } else {
+  } else if ([typeString isEqualToString:@"custom"]) {
+      message = [[ARDCustomMessage alloc] initWithTagAndData:values[@"tag"] data:values[@"data"]];
+  }
+  else {
     NSLog(@"Unexpected type: %@", typeString);
   }
   return message;
@@ -138,6 +141,27 @@ static NSString const *kARDSignalingMessageTypeKey = @"type";
   return [NSJSONSerialization dataWithJSONObject:message
                                          options:NSJSONWritingPrettyPrinted
                                            error:NULL];
+}
+
+@end
+
+@implementation ARDCustomMessage
+
+- (instancetype)initWithTagAndData:(NSString *)tag
+                              data:(NSDictionary *)data
+{
+    self.tag = tag;
+    self.data = data;
+    return [super initWithType:kARDSignalingMessageTypeCustomMessage];
+}
+
+- (NSData *)JSONData {
+    NSDictionary *message = @{
+                              @"type": @"custom", @"tag": [self tag], @"data" : [self data]
+                              };
+    return [NSJSONSerialization dataWithJSONObject:message
+                                           options:NSJSONWritingPrettyPrinted
+                                             error:NULL];
 }
 
 @end
