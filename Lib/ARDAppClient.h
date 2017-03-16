@@ -26,29 +26,30 @@
  */
 
 #import <Foundation/Foundation.h>
-
 #import "RTCVideoTrack.h"
 
 typedef NS_ENUM(NSInteger, ARDAppClientState) {
-  // Disconnected from servers.
-  kARDAppClientStateDisconnected,
-  // Connecting to servers.
-  kARDAppClientStateConnecting,
-  // Connected to servers.
-  kARDAppClientStateConnected,
+    // Disconnected from servers.
+    kARDAppClientStateDisconnected,
+    // Connecting to servers.
+    kARDAppClientStateConnecting,
+    // Connected to servers.
+    kARDAppClientStateConnected,
 };
 
 @class ARDAppClient;
+@class AVCaptureDevice;
+
 @protocol ARDAppClientDelegate <NSObject>
 
 - (void)appClient:(ARDAppClient *)client
-    didChangeState:(ARDAppClientState)state;
+   didChangeState:(ARDAppClientState)state;
 
 - (void)appClient:(ARDAppClient *)client
-    didReceiveLocalVideoTrack:(RTCVideoTrack *)localVideoTrack;
+didReceiveLocalVideoTrack:(RTCVideoTrack *)localVideoTrack;
 
 - (void)appClient:(ARDAppClient *)client
-    didReceiveRemoteVideoTrack:(RTCVideoTrack *)remoteVideoTrack;
+didReceiveRemoteVideoTrack:(RTCVideoTrack *)remoteVideoTrack;
 
 - (void)appClient:(ARDAppClient *)client
          didError:(NSError *)error;
