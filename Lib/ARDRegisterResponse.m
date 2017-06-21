@@ -83,7 +83,14 @@ static NSString const *kARDRegisterWebSocketRestURLKey = @"wss_post_url";
   for (NSString *message in messages) {
     ARDSignalingMessage *signalingMessage =
         [ARDSignalingMessage messageFromJSONString:message];
-    [signalingMessages addObject:signalingMessage];
+      // Add non nil signaling message
+      if (signalingMessage) {
+          [signalingMessages addObject:signalingMessage];
+      }
+  }
+  // Error parsing signaling message JSON.
+  if ([signalingMessages count] == 0) {
+    response.result = kARDRegisterResultTypeUnknown;
   }
   response.messages = signalingMessages;
 
