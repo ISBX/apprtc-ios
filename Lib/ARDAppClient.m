@@ -201,7 +201,7 @@ static NSInteger kARDAppClientErrorInvalidRoom = -7;
         //Error in parsing response data
         [strongSelf disconnect];
         NSDictionary *userInfo = @{
-          NSLocalizedDescriptionKey: @"Room server network error",
+          NSLocalizedDescriptionKey: @"Room server network error"
         };
         NSError *error =
         [[NSError alloc] initWithDomain:kARDAppClientErrorDomain
