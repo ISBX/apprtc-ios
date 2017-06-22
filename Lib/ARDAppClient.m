@@ -189,7 +189,7 @@ static NSInteger kARDAppClientErrorInvalidRoom = -7;
           (int)response.result);
       [strongSelf disconnect];
       NSDictionary *userInfo = @{
-        NSLocalizedDescriptionKey: @"Room is full.",
+        NSLocalizedDescriptionKey: @"Room is full."
       };
       NSError *error =
           [[NSError alloc] initWithDomain:kARDAppClientErrorDomain
@@ -208,6 +208,7 @@ static NSInteger kARDAppClientErrorInvalidRoom = -7;
                                    code:kARDAppClientErrorNetwork
                                userInfo:userInfo];
         [strongSelf.delegate appClient:strongSelf didError:error];
+        return;
     }
     NSLog(@"Registered with room server.");
     strongSelf.roomId = response.roomId;
