@@ -197,7 +197,7 @@ static NSInteger kARDAppClientErrorInvalidRoom = -7;
                                  userInfo:userInfo];
       [strongSelf.delegate appClient:strongSelf didError:error];
       return;
-    } else if (response && response.result !=  kARDRegisterResultTypeSuccess) {
+    } else if (response.result ==  kARDRegisterResultTypeUnknown) {
         //Error in parsing response data
         [strongSelf disconnect];
         NSDictionary *userInfo = @{
