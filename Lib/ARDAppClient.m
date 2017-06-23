@@ -184,7 +184,7 @@ static NSInteger kARDAppClientErrorInvalidRoom = -7;
   [self registerWithRoomServerForRoomId:roomId
                       completionHandler:^(ARDRegisterResponse *response) {
     ARDAppClient *strongSelf = weakSelf;
-    if (!response) {
+    if (!response || response.result == kARDRegisterResultTypeFull) {
       NSLog(@"Failed to register with room server. Result:%d",
           (int)response.result);
       [strongSelf disconnect];
