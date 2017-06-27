@@ -184,12 +184,12 @@ static NSInteger kARDAppClientErrorInvalidRoom = -7;
   [self registerWithRoomServerForRoomId:roomId
                       completionHandler:^(ARDRegisterResponse *response) {
     ARDAppClient *strongSelf = weakSelf;
-    if (!response || response.result != kARDRegisterResultTypeSuccess) {
+    if (!response || response.result == kARDRegisterResultTypeFull) {
       NSLog(@"Failed to register with room server. Result:%d",
           (int)response.result);
       [strongSelf disconnect];
       NSDictionary *userInfo = @{
-        NSLocalizedDescriptionKey: @"Room is full.",
+        NSLocalizedDescriptionKey: @"Room is full."
       };
       NSError *error =
           [[NSError alloc] initWithDomain:kARDAppClientErrorDomain
@@ -197,6 +197,18 @@ static NSInteger kARDAppClientErrorInvalidRoom = -7;
                                  userInfo:userInfo];
       [strongSelf.delegate appClient:strongSelf didError:error];
       return;
+    } else if (response.result ==  kARDRegisterResultTypeUnknown) {
+        //Error in parsing response data
+        [strongSelf disconnect];
+        NSDictionary *userInfo = @{
+          NSLocalizedDescriptionKey: @"Unknown error occurred."
+        };
+        NSError *error =
+        [[NSError alloc] initWithDomain:kARDAppClientErrorDomain
+                                   code:kARDAppClientErrorUnknown
+                               userInfo:userInfo];
+        [strongSelf.delegate appClient:strongSelf didError:error];
+        return;
     }
     NSLog(@"Registered with room server.");
     strongSelf.roomId = response.roomId;
