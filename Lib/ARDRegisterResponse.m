@@ -89,7 +89,7 @@ static NSString const *kARDRegisterWebSocketRestURLKey = @"wss_post_url";
       }
   }
   // Error parsing signaling message JSON.
-  if ([signalingMessages count] == 0) {
+  if ([messages count] > 0 && [signalingMessages count] == 0) {
     response.result = kARDRegisterResultTypeUnknown;
   }
   response.messages = signalingMessages;
