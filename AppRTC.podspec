@@ -14,3 +14,6 @@ Pod::Spec.new do |s|
   s.dependency "libjingle_peerconnection"
   s.dependency "SocketRocket"
 end
+
+# Publishing Pod use flags
+# pod trunk push AppRTC.podspec --use-libraries --allow-warnings
