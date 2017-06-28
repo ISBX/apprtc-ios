@@ -143,4 +143,10 @@ If you'd like to contribute, please fork the repository and issue pull requests.
 
 ## Known Issues
 The following are known issues that are being worked and should be released shortly:
-* None at this time
+* When installing via CocoaPods in a swift project where you have `use_frameworks!` declared in your `PodFile` you may get the error message `transitive dependencies that include static binaries`. To resolve the issue you can add the following to your `PodFile`
+
+```
+pre_install do |installer|
+    def installer.verify_no_static_framework_transitive_dependencies; end
+end
+```
