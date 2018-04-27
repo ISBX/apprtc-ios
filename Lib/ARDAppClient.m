@@ -46,6 +46,7 @@
 #import "RTCSessionDescriptionDelegate.h"
 #import "RTCVideoCapturer.h"
 #import "RTCVideoTrack.h"
+#import "RTCDataChannel.h"
 
 // TODO(tkchin): move these to a configuration object.
 static NSString *kARDRoomServerHostUrl =
@@ -74,7 +75,7 @@ static NSInteger kARDAppClientErrorInvalidClient = -6;
 static NSInteger kARDAppClientErrorInvalidRoom = -7;
 
 @interface ARDAppClient () <ARDWebSocketChannelDelegate,
-    RTCPeerConnectionDelegate, RTCSessionDescriptionDelegate>
+    RTCPeerConnectionDelegate, RTCSessionDescriptionDelegate, RTCDataChannelDelegate>
 @property(nonatomic, strong) ARDWebSocketChannel *channel;
 @property(nonatomic, strong) RTCPeerConnection *peerConnection;
 @property(nonatomic, strong) RTCPeerConnectionFactory *factory;
@@ -93,6 +94,7 @@ static NSInteger kARDAppClientErrorInvalidRoom = -7;
 @property(nonatomic, strong) NSURL *webSocketRestURL;
 @property(nonatomic, strong) RTCAudioTrack *defaultAudioTrack;
 @property(nonatomic, strong) RTCVideoTrack *defaultVideoTrack;
+@property(nonatomic, strong) RTCDataChannel *defaultDataChannel;
 
 @end
 
@@ -345,6 +347,14 @@ static NSInteger kARDAppClientErrorInvalidRoom = -7;
 
 - (void)peerConnection:(RTCPeerConnection*)peerConnection
     didOpenDataChannel:(RTCDataChannel*)dataChannel {
+  NSLog(@"Data channel open %@", dataChannel.label);
+  dataChannel.delegate = self;
+  self.defaultDataChannel = dataChannel;
+}
+
+- (BOOL)dataChannelSendMessage:(NSString*)message {
+  RTCDataBuffer *buffer = [[RTCDataBuffer alloc] initWithData:[message dataUsingEncoding:NSUTF8StringEncoding] isBinary:NO];
+  return [self.defaultDataChannel sendData:buffer];
 }
 
 #pragma mark - RTCSessionDescriptionDelegate
@@ -401,6 +411,15 @@ static NSInteger kARDAppClientErrorInvalidRoom = -7;
   });
 }
 
+- (void)channelDidChangeState:(RTCDataChannel*)channel
+{
+  NSLog(@"Data channel state %u", channel.state);
+}
+
+- (void)channel:(RTCDataChannel *)channel didReceiveMessageWithBuffer:(RTCDataBuffer *)buffer {
+  NSLog(@"Data channel message received");
+}
+
 #pragma mark - Private
 
 - (BOOL)isRegisteredWithRoomServer {
@@ -420,6 +439,15 @@ static NSInteger kARDAppClientErrorInvalidRoom = -7;
                                                   delegate:self];
   RTCMediaStream *localStream = [self createLocalMediaStream];
   [_peerConnection addStream:localStream];
+  // Create data channel
+  RTCDataChannelInit *datainit = [[RTCDataChannelInit alloc] init];
+  datainit.isNegotiated = YES;
+  datainit.isOrdered = YES;
+  datainit.maxRetransmits = 30;
+  datainit.maxRetransmitTimeMs = 30000;
+  datainit.streamId = 1;
+  self.defaultDataChannel = [_peerConnection createDataChannelWithLabel:@"messages" config:datainit];
+  self.defaultDataChannel.delegate= self;
   if (_isInitiator) {
     [self sendOffer];
   } else {
